@@ -9,10 +9,10 @@ export const submitSkill = mutation({
   args: {
     name: v.string(),
     kind: v.union(
-      v.literal("tool"),
+      v.literal("skill"),
       v.literal("mcp"),
-      v.literal("prompt"),
-      v.literal("extension"),
+      v.literal("hook"),
+      v.literal("subagent"),
     ),
     description: v.optional(v.string()),
     body: v.string(),

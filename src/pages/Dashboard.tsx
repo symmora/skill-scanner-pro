@@ -41,7 +41,7 @@ import { useMutation, useQuery } from "convex/react";
 import { toast } from "sonner";
 
 type RiskLevel = "none" | "low" | "medium" | "high" | "critical";
-type SkillKind = "tool" | "mcp" | "prompt" | "extension";
+type SkillKind = "skill" | "mcp" | "hook" | "subagent";
 
 const RISK_STYLE: Record<RiskLevel, { chip: string; bar: string }> = {
   none: {
@@ -101,10 +101,10 @@ function SkillListItem({
   const isFlagged = skill.riskLevel === "high" || skill.riskLevel === "critical";
 
   const kindLabel: Record<SkillKind, string> = {
-    tool: t.kindTool,
+    skill: t.kindSkill,
     mcp: t.kindMcp,
-    prompt: t.kindPrompt,
-    extension: t.kindExtension,
+    hook: t.kindHook,
+    subagent: t.kindSubagent,
   };
 
   return (
@@ -276,7 +276,7 @@ export default function Dashboard() {
   const removeSkill = useMutation(api.skills.removeSkill);
 
   const [name, setName] = useState("");
-  const [kind, setKind] = useState<SkillKind>("tool");
+  const [kind, setKind] = useState<SkillKind>("skill");
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -444,10 +444,10 @@ export default function Dashboard() {
                       <SelectValue placeholder={t.fieldType} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="tool">{t.kindTool}</SelectItem>
+                      <SelectItem value="skill">{t.kindSkill}</SelectItem>
                       <SelectItem value="mcp">{t.kindMcp}</SelectItem>
-                      <SelectItem value="prompt">{t.kindPrompt}</SelectItem>
-                      <SelectItem value="extension">{t.kindExtension}</SelectItem>
+                      <SelectItem value="hook">{t.kindHook}</SelectItem>
+                      <SelectItem value="subagent">{t.kindSubagent}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

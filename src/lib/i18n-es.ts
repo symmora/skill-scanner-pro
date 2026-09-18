@@ -114,8 +114,9 @@ const es = {
   // Kinds
   kindTool: "Herramienta",
   kindMcp: "MCP",
-  kindPrompt: "Pack de prompts",
-  kindExtension: "Extensión",
+  kindSkill: "Skill",
+  kindHook: "Hook",
+  kindSubagent: "Subagente",
 
   // Toasts
   toastScanned: (name: string, score: number, level: string) =>

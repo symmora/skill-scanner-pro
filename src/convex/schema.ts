@@ -17,17 +17,17 @@ export const roleValidator = v.union(
 export type Role = Infer<typeof roleValidator>;
 
 export const SKILL_KINDS = {
-  TOOL: "tool",
+  SKILL: "skill",
   MCP: "mcp",
-  PROMPT: "prompt",
-  EXTENSION: "extension",
+  HOOK: "hook",
+  SUBAGENT: "subagent",
 } as const;
 
 export const skillKindValidator = v.union(
-  v.literal(SKILL_KINDS.TOOL),
+  v.literal(SKILL_KINDS.SKILL),
   v.literal(SKILL_KINDS.MCP),
-  v.literal(SKILL_KINDS.PROMPT),
-  v.literal(SKILL_KINDS.EXTENSION),
+  v.literal(SKILL_KINDS.HOOK),
+  v.literal(SKILL_KINDS.SUBAGENT),
 );
 export type SkillKind = Infer<typeof skillKindValidator>;
 

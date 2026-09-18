@@ -12,7 +12,7 @@ import type { Language } from "./i18n";
 import { REPORT_STRINGS } from "./report-strings";
 
 type RiskLevel = "none" | "low" | "medium" | "high" | "critical";
-type SkillKind = "tool" | "mcp" | "prompt" | "extension";
+type SkillKind = "skill" | "mcp" | "hook" | "subagent";
 
 type ScannedSkill = Omit<Doc<"scannedSkills">, "userId">;
 
@@ -21,10 +21,10 @@ export function skillToMarkdown(skill: ScannedSkill, language: Language): string
   const meta = getRuleMeta;
 
   const kindLabels: Record<SkillKind, string> = {
-    tool: s.kindTool,
+    skill: s.kindSkill,
     mcp: s.kindMcp,
-    prompt: s.kindPrompt,
-    extension: s.kindExtension,
+    hook: s.kindHook,
+    subagent: s.kindSubagent,
   };
   const levelLabels: Record<RiskLevel, string> = {
     none: s.levelNone,

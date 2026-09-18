@@ -21,8 +21,9 @@ export interface ReportStrings {
   disclaimer: string;
   kindTool: string;
   kindMcp: string;
-  kindPrompt: string;
-  kindExtension: string;
+  kindSkill: string;
+  kindHook: string;
+  kindSubagent: string;
   levelNone: string;
   levelLow: string;
   levelMedium: string;
@@ -47,8 +48,9 @@ export const REPORT_STRINGS: Record<Language, ReportStrings> = {
       "Static analysis only — findings are signals, not verdicts. Always review by hand before running a skill.",
     kindTool: "Tool",
     kindMcp: "MCP",
-    kindPrompt: "Prompt pack",
-    kindExtension: "Extension",
+    kindSkill: "Skill",
+    kindHook: "Hook",
+    kindSubagent: "Subagent",
     levelNone: "Clean",
     levelLow: "Low",
     levelMedium: "Medium",
@@ -71,8 +73,9 @@ export const REPORT_STRINGS: Record<Language, ReportStrings> = {
       "Только статический анализ — находки это сигналы, а не приговоры. Всегда проверяйте навык вручную перед запуском.",
     kindTool: "Инструмент",
     kindMcp: "MCP",
-    kindPrompt: "Набор промптов",
-    kindExtension: "Расширение",
+    kindSkill: "Скилл",
+    kindHook: "Хук",
+    kindSubagent: "Субагент",
     levelNone: "Чисто",
     levelLow: "Низкий",
     levelMedium: "Средний",
@@ -95,8 +98,9 @@ export const REPORT_STRINGS: Record<Language, ReportStrings> = {
       "Solo análisis estático — los hallazgos son señales, no veredictos. Revisa siempre a mano antes de ejecutar un skill.",
     kindTool: "Herramienta",
     kindMcp: "MCP",
-    kindPrompt: "Paquete de prompts",
-    kindExtension: "Extensión",
+    kindSkill: "Skill",
+    kindHook: "Hook",
+    kindSubagent: "Subagente",
     levelNone: "Limpio",
     levelLow: "Bajo",
     levelMedium: "Medio",

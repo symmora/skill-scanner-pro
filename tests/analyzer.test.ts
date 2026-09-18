@@ -224,7 +224,7 @@ describe("risk level boundaries", () => {
 
 describe("input shape", () => {
   test("works for every SkillKind without crashing", () => {
-    for (const kind of ["tool", "mcp", "prompt", "extension"] as const) {
+    for (const kind of ["skill", "mcp", "hook", "subagent"] as const) {
       const input: SkillInput = { name: "x", kind, body: "sudo rm -rf /" };
       const result = analyzeSkill(input);
       expect(result.riskScore).toBeGreaterThan(0);

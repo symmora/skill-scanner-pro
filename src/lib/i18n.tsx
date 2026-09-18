@@ -128,8 +128,9 @@ const en = {
   // Kinds
   kindTool: "Tool",
   kindMcp: "MCP",
-  kindPrompt: "Prompt pack",
-  kindExtension: "Extension",
+  kindSkill: "Skill",
+  kindHook: "Hook",
+  kindSubagent: "Subagent",
 
   // Toasts
   toastScanned: (name: string, score: number, level: string) =>
@@ -269,8 +270,9 @@ const ru: Dict = {
 
   kindTool: "Инструмент",
   kindMcp: "MCP",
-  kindPrompt: "Набор промптов",
-  kindExtension: "Расширение",
+  kindSkill: "Скилл",
+  kindHook: "Хук",
+  kindSubagent: "Субагент",
 
   toastScanned: (name: string, score: number, level: string) =>
     `Просканировано «${name}» — риск ${score}/100 (${level})`,
