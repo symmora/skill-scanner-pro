@@ -1,0 +1,265 @@
+/**
+ * Heuristic analyzer that scores agent skills / tools / MCP configs for
+ * manipulative behavior ("malicious movements") and hidden tooling.
+ *
+ * Pure functions only — no Convex imports, so it stays unit-testable and
+ * the mutations in skills.ts stay thin.
+ */
+
+import type { Finding, RiskLevel, SkillKind } from "./schema";
+
+export interface SkillInput {
+  name: string;
+  description?: string;
+  kind: SkillKind;
+  /** Raw manifest / definition text pasted or uploaded by the user. */
+  body: string;
+}
+
+export interface SkillAnalysis {
+  riskScore: number;
+  riskLevel: RiskLevel;
+  findings: Finding[];
+}
+
+interface Rule {
+  id: string;
+  title: string;
+  /** Why this pattern is dangerous, shown to the user. */
+  detail: string;
+  /** Weight 0-100. The risk score is the max severity across findings,
+   *  with a small stacking bonus for multiple distinct rule hits. */
+  severity: number;
+  /** Each match becomes one evidence string. */
+  patterns: RegExp[];
+}
+
+const RULES: Rule[] = [
+  // ── Obfuscation ────────────────────────────────────────────────────────
+  {
+    id: "CMD_OBFUSCATION",
+    title: "Obfuscated shell command",
+    detail:
+      "Base64/hex blobs piped into an interpreter hide what actually runs. Classic way to smuggle a payload past human review.",
+    severity: 85,
+    patterns: [
+      /echo\s+[A-Za-z0-9+/=]{24,}\s*\|\s*base64\s+-d\s*\|\s*(ba)?sh\b/gi,
+      /base64\s+-d\s*<<[^|]*\|\s*(ba)?sh\b/gi,
+      /printf\s+['"][0-9a-fA-F\\x]{40,}['"].*\|\s*(ba)?sh\b/gi,
+      /\b(bash|sh|python3?|node)\s+-c\s+['"][^'"]*(\\x[0-9a-fA-F]{2}){8,}/gi,
+      /eval\s*\(\s*atob\s*\(/gi,
+    ],
+  },
+  {
+    id: "ENCODED_SECRETS",
+    title: "Encoded blob that looks like a secret",
+    detail:
+      "A long base64/hex literal may conceal credentials or a second-stage payload. Decode it manually before trusting the skill.",
+    severity: 55,
+    patterns: [
+      /[A-Za-z0-9+/]{48,}={0,2}/g,
+      /\b(?:[0-9a-fA-F]{2}){32,}\b/g,
+    ],
+  },
+
+  // ── Exfiltration ───────────────────────────────────────────────────────
+  {
+    id: "EXFIL_HTTP",
+    title: "Sends data to an external endpoint",
+    detail:
+      "curl/wget/POST to a remote host can quietly ship your files, env vars, or conversation history to an attacker-controlled server.",
+    severity: 75,
+    patterns: [
+      /\bcurl\b[^|;&]*-X\s*(POST|PUT)/gi,
+      /\b(wget|curl)\b[^|;&]*https?:\/\//gi,
+      /\b(fetch|axios)\s*\(\s*['"]https?:\/\//gi,
+      /requests\.post\s*\(/gi,
+      /\bnc\s+(-\w+\s+)*\d+\.\d+\.\d+\.\d+/gi,
+    ],
+  },
+  {
+    id: "EXFIL_ENV",
+    title: "Reads environment variables / secrets",
+    detail:
+      "Reading env, .env, or credential files lets a skill harvest API keys — pair that with any network call and it is exfiltration.",
+    severity: 70,
+    patterns: [
+      /process\.env\b/gi,
+      /\bimport\s+os\b.*environ/gi,
+      /os\.environ/gi,
+      /printenv|env\s*\|/gi,
+      /~\/\.?(ssh|aws|netrc|npmrc|gnupg)/gi,
+      /\.env\b/gi,
+      /id_rsa|credentials\b|secret[_-]?key\b/gi,
+    ],
+  },
+  {
+    id: "FILE_SWEEP",
+    title: "Broad filesystem access",
+    detail:
+      "Recursive reads/writes over home or root directories are how skills gather material to exfiltrate — and how they can destroy data.",
+    severity: 60,
+    patterns: [
+      /\bfind\s+\/|\bfind\s+~/gi,
+      /\bdu\s+-[a-zA-Z]*a/gi,
+      /\bchmod\s+(-\w+\s+)*777\b/gi,
+      /rm\s+-rf\s+(\/|~)/gi,
+      /shutil\.rmtree/gi,
+      /glob\s*\(\s*['"]\*\*\/\*['"]\s*\)/gi,
+    ],
+  },
+
+  // ── Prompt-level manipulation ──────────────────────────────────────────
+  {
+    id: "PROMPT_INJECTION",
+    title: "Instruction override inside skill text",
+    detail:
+      "Phrases like 'ignore previous instructions' or 'you must now' try to hijack the agent away from the user's intent — the core malicious movement for prompt/extension skills.",
+    severity: 90,
+    patterns: [
+      /ignore\s+(all\s+)?(previous|prior|above)\s+instructions/gi,
+      /disregard\s+(all\s+)?(previous|prior|your)\s+(instructions|rules|training)/gi,
+      /(you\s+must|do\s+not\s+tell|don'?t\s+tell)\s+(the\s+)?(user|human)/gi,
+      /do\s+not\s+(reveal|disclose|mention)\s+(this|these)\s+instructions/gi,
+      /system\s*prompt\s*:|###\s*system\b/gi,
+      /you\s+are\s+now\s+(a|an)\s+/gi,
+      /(new|override)\s+(system\s+)?instructions\s*:/gi,
+      /keep\s+this\s+(secret|hidden|between\s+us)/gi,
+    ],
+  },
+  {
+    id: "TOOL_HIJACK",
+    title: "Hidden tool invocation or shadow config",
+    detail:
+      "MCP/extension configs that call extra servers, run arbitrary commands, or auto-approve can expose tools the user never agreed to.",
+    severity: 80,
+    patterns: [
+      /mcpServers[\s\S]{0,200}command\s*:/gi,
+      /allowedTools\s*:\s*\[\s*['"]\*/gi,
+      /"(alwaysAllow|autoApprove|dangerouslySkipPermissions)"\s*:\s*true/gi,
+      /--allow-all|--yolo|--dangerously/gi,
+      /npx\b[^;&]*\b(sh|bash|curl|node\s+-e)\b/gi,
+    ],
+  },
+  {
+    id: "SILENT_INSTALL",
+    title: "Installs software without asking",
+    detail:
+      "Silent package installs (pip/npm/curl-to-shell) can pull in compromised dependencies or a reverse shell at first run.",
+    severity: 65,
+    patterns: [
+      /\b(pip3?|npm|i?nx|bun|yarn)\s+(install|add|i)\b[^|;&]*(&&|;|\|)/gi,
+      /curl[^|;&]*\|\s*(ba)?sh\b/gi,
+      /wget[^|;&]*\|\s*(ba)?sh\b/gi,
+      /apt(-get)?\s+install\s+(-y\s+)/gi,
+    ],
+  },
+
+  // ── Persistence ────────────────────────────────────────────────────────
+  {
+    id: "PERSISTENCE",
+    title: "Tries to survive restarts",
+    detail:
+      "Writing cron jobs, shell profiles, launch agents, or autostart entries means the skill wants to keep running after the session ends.",
+    severity: 80,
+    patterns: [
+      /crontab\b/gi,
+      /\/etc\/(cron|systemd|launchd)/gi,
+      /~\/\.(bashrc|zshrc|profile|bash_profile)/gi,
+      /LaunchAgents|autostart/gi,
+      /registry\s+run|RunOnce|CurrentVersion\\Run/gi,
+    ],
+  },
+
+  // ── Escalation ─────────────────────────────────────────────────────────
+  {
+    id: "PRIVILEGE_ESCALATION",
+    title: "Requests elevated privileges",
+    detail:
+      "sudo, uid spoofing, or container escapes give a skill power far beyond what a helper needs.",
+    severity: 85,
+    patterns: [
+      /\bsudo\b/gi,
+      /chmod\s+[u+]\+s/gi,
+      /\bnsenter\b|\bunshare\b|\bcapsh\b/gi,
+      /\/etc\/(passwd|shadow)\b/gi,
+      /setuid|setgid\b/gi,
+    ],
+  },
+];
+
+const SEVERITY_CAP = 100;
+/** Each additional distinct rule beyond the first nudges the score up a bit,
+ *  so a skill that hits many weak rules still scores as suspicious overall. */
+const STACK_BONUS_PER_EXTRA_RULE = 6;
+const MAX_STACK_BONUS = 24;
+
+function toRiskLevel(score: number): RiskLevel {
+  if (score >= 85) return "critical";
+  if (score >= 60) return "high";
+  if (score >= 30) return "medium";
+  if (score > 0) return "low";
+  return "none";
+}
+
+/** Only flag encoded blobs when the text otherwise looks like config/code;
+ *  prose in a description rarely warrants the ENCODED_SECRETS heuristic. */
+function looksLikeConfigOrCode(text: string): boolean {
+  return (
+    /\{|\}|=>|;\n|^\s*(import|export|const|function|def)\b/m.test(text) ||
+    /(https?:\/\/|\/[a-z-]+\/[a-z-]+)/i.test(text)
+  );
+}
+
+export function analyzeSkill(input: SkillInput): SkillAnalysis {
+  const haystack = `${input.name}\n${input.description ?? ""}\n${input.body}`;
+  const findings: Finding[] = [];
+
+  for (const rule of RULES) {
+    const evidence: string[] = [];
+    const seen = new Set<string>();
+    for (const pattern of rule.patterns) {
+      const re = new RegExp(pattern.source, pattern.flags.includes("g") ? pattern.flags : pattern.flags + "g");
+      let match: RegExpExecArray | null;
+      while ((match = re.exec(haystack)) !== null) {
+        const snippet = match[0].trim().slice(0, 160);
+        if (snippet && !seen.has(snippet)) {
+          seen.add(snippet);
+          evidence.push(snippet);
+        }
+        if (match.index === re.lastIndex) re.lastIndex++; // guard zero-length matches
+        if (evidence.length >= 4) break;
+      }
+      if (evidence.length >= 4) break;
+    }
+    if (evidence.length === 0) continue;
+
+    if (rule.id === "ENCODED_SECRETS" && !looksLikeConfigOrCode(haystack)) {
+      continue;
+    }
+
+    findings.push({
+      ruleId: rule.id,
+      title: rule.title,
+      detail: rule.detail,
+      severity: rule.severity,
+      evidence,
+    });
+  }
+
+  findings.sort((a, b) => b.severity - a.severity);
+
+  const maxSeverity = findings.length > 0 ? findings[0].severity : 0;
+  const distinctRules = new Set(findings.map((f) => f.ruleId)).size;
+  const stackBonus = Math.min(
+    Math.max(0, distinctRules - 1) * STACK_BONUS_PER_EXTRA_RULE,
+    MAX_STACK_BONUS,
+  );
+  const riskScore = Math.min(maxSeverity + stackBonus, SEVERITY_CAP);
+
+  return {
+    riskScore,
+    riskLevel: toRiskLevel(riskScore),
+    findings,
+  };
+}
