@@ -40,7 +40,13 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { toast } from "sonner";
 
-type RiskLevel = "none" | "low" | "medium" | "high" | "critical";
+type RiskLevel =
+  | "none"
+  | "low"
+  | "medium"
+  | "elevated"
+  | "high"
+  | "critical";
 type SkillKind = "skill" | "mcp" | "hook" | "subagent";
 
 const RISK_STYLE: Record<RiskLevel, { chip: string; bar: string }> = {
@@ -55,6 +61,10 @@ const RISK_STYLE: Record<RiskLevel, { chip: string; bar: string }> = {
   medium: {
     chip: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
     bar: "bg-amber-500",
+  },
+  elevated: {
+    chip: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
+    bar: "bg-yellow-500",
   },
   high: {
     chip: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
@@ -168,7 +178,7 @@ function SkillListItem({
               "rounded-lg border px-3.5 py-2.5 text-sm font-medium leading-6",
               isFlagged
                 ? "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
-                : skill.riskLevel === "medium"
+                : skill.riskLevel === "elevated" || skill.riskLevel === "medium"
                   ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
                   : "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
             )}
@@ -290,8 +300,8 @@ export default function Dashboard() {
       (s) => s.riskLevel === "high" || s.riskLevel === "critical",
     ).length;
     const clean = sortedSkills.filter((s) => s.riskLevel === "none").length;
-    const top = sortedSkills[0]?.riskScore ?? 0;
-    return { total, flagged, clean, top };
+    const topSkill = sortedSkills[0];
+    return { total, flagged, clean, topSkill };
   }, [sortedSkills]);
 
   const visibleSkills = useMemo(() => {
@@ -376,10 +386,19 @@ export default function Dashboard() {
               tone: "text-emerald-500 bg-emerald-500/10",
             },
             {
-              label: t.statsTop,
-              value: stats.top,
+              label: t.statsClass,
+              value:
+                stats.topSkill !== undefined
+                  ? t.riskLabels[stats.topSkill.riskLevel as RiskLevel]
+                  : "—",
               icon: FileSearch,
-              tone: "text-amber-500 bg-amber-500/10",
+              tone:
+                stats.topSkill !== undefined &&
+                (stats.topSkill.riskLevel === "high" ||
+                  stats.topSkill.riskLevel === "critical" ||
+                  stats.topSkill.riskLevel === "elevated")
+                  ? "text-red-500 bg-red-500/10"
+                  : "text-amber-500 bg-amber-500/10",
             },
           ].map((s) => (
             <Card key={s.label} className="border-border/70 shadow-card">

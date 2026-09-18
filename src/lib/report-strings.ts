@@ -27,6 +27,7 @@ export interface ReportStrings {
   levelNone: string;
   levelLow: string;
   levelMedium: string;
+  levelElevated: string;
   levelHigh: string;
   levelCritical: string;
 }
@@ -54,6 +55,7 @@ export const REPORT_STRINGS: Record<Language, ReportStrings> = {
     levelNone: "Clean",
     levelLow: "Low",
     levelMedium: "Medium",
+    levelElevated: "Elevated",
     levelHigh: "High",
     levelCritical: "Critical",
   },
@@ -79,6 +81,7 @@ export const REPORT_STRINGS: Record<Language, ReportStrings> = {
     levelNone: "Чисто",
     levelLow: "Низкий",
     levelMedium: "Средний",
+    levelElevated: "Повышенный",
     levelHigh: "Высокий",
     levelCritical: "Критический",
   },
@@ -104,6 +107,7 @@ export const REPORT_STRINGS: Record<Language, ReportStrings> = {
     levelNone: "Limpio",
     levelLow: "Bajo",
     levelMedium: "Medio",
+    levelElevated: "Elevado",
     levelHigh: "Alto",
     levelCritical: "Crítico",
   },

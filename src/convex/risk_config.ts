@@ -64,6 +64,12 @@ export function loadRiskConfig(): RiskConfig {
         1,
         99,
       ),
+      elevated: numFromEnv(
+        "RISK_ELEVATED_THRESHOLD",
+        DEFAULT_RISK_CONFIG.thresholds.elevated,
+        1,
+        99,
+      ),
       high: numFromEnv(
         "RISK_HIGH_THRESHOLD",
         DEFAULT_RISK_CONFIG.thresholds.high,

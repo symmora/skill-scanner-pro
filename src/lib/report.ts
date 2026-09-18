@@ -11,7 +11,13 @@ import { getRuleMeta } from "./rule-catalog";
 import type { Language } from "./i18n";
 import { REPORT_STRINGS } from "./report-strings";
 
-type RiskLevel = "none" | "low" | "medium" | "high" | "critical";
+type RiskLevel =
+  | "none"
+  | "low"
+  | "medium"
+  | "elevated"
+  | "high"
+  | "critical";
 type SkillKind = "skill" | "mcp" | "hook" | "subagent";
 
 type ScannedSkill = Omit<Doc<"scannedSkills">, "userId">;
@@ -30,6 +36,7 @@ export function skillToMarkdown(skill: ScannedSkill, language: Language): string
     none: s.levelNone,
     low: s.levelLow,
     medium: s.levelMedium,
+    elevated: s.levelElevated,
     high: s.levelHigh,
     critical: s.levelCritical,
   };

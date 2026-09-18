@@ -91,13 +91,18 @@ export default function Landing() {
 
   const mockRows = [
     { name: "deploy-helper", score: 92, level: "critical" as const, bar: "bg-red-500" },
-    { name: "repo-summarizer", score: 34, level: "medium" as const, bar: "bg-amber-500" },
-    { name: "markdown-lint", score: 0, level: "none" as const, bar: "bg-emerald-500" },
+    { name: "repo-summarizer", score: 87, level: "high" as const, bar: "bg-orange-500" },
+    { name: "web-fetcher", score: 64, level: "elevated" as const, bar: "bg-yellow-500" },
+    { name: "db-explorer", score: 39, level: "medium" as const, bar: "bg-amber-500" },
+    { name: "markdown-lint", score: 14, level: "low" as const, bar: "bg-sky-500" },
   ];
 
   const levelChip: Record<string, string> = {
     critical: "text-red-600 bg-red-500/10",
+    high: "text-orange-600 bg-orange-500/10",
+    elevated: "text-yellow-600 bg-yellow-500/10",
     medium: "text-amber-600 bg-amber-500/10",
+    low: "text-sky-600 bg-sky-500/10",
     none: "text-emerald-600 bg-emerald-500/10",
   };
 
@@ -177,7 +182,7 @@ export default function Landing() {
                   <ScanLine className="size-4 text-brand-500" />
                   {t.mockTitle}
                 </div>
-                <span className="text-xs text-muted-foreground">{t.mockCount(3)}</span>
+                <span className="text-xs text-muted-foreground">{t.mockCount(5)}</span>
               </div>
               <div className="divide-y divide-border/50">
                 {mockRows.map((r) => (

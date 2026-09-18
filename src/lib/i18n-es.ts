@@ -57,12 +57,14 @@ const es = {
     none: "Limpio",
     low: "Bajo",
     medium: "Medio",
+    elevated: "Elevado",
     high: "Alto",
     critical: "Crítico",
   },
   clean: "Limpio",
   low: "Bajo",
   medium: "Medio",
+  elevated: "Elevado",
   high: "Alto",
   critical: "Crítico",
 
@@ -77,7 +79,7 @@ const es = {
   statsScanned: "Skills escaneados",
   statsFlagged: "Alto / crítico",
   statsClean: "Limpios",
-  statsTop: "Puntuación máxima",
+  statsClass: "Clase de la puntuación",
   scanSkill: "Escanear un skill",
   scanNote:
     "Nunca se ejecuta código. El skill solo se lee como texto y se analiza con algoritmos de NLP.",

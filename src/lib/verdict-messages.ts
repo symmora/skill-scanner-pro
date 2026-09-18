@@ -9,7 +9,13 @@
 
 type Lang = "en" | "ru" | "es";
 
-export type VerdictLevel = "none" | "low" | "medium" | "high" | "critical";
+export type VerdictLevel =
+  | "none"
+  | "low"
+  | "medium"
+  | "elevated"
+  | "high"
+  | "critical";
 
 const VERDICTS: Record<Lang, Record<VerdictLevel, string[]>> = {
   en: {
@@ -33,6 +39,13 @@ const VERDICTS: Record<Lang, Record<VerdictLevel, string[]>> = {
       "Think twice before letting this near your secrets.",
       "Not malicious, but demanding. Set boundaries first.",
       "Allowed with supervision. Check what it touches.",
+    ],
+    elevated: [
+      "Restricted use only. Watch what it does, always.",
+      "Approach with care: clear the findings before trusting it.",
+      "Not for open access. Supervised runs only.",
+      "Elevated risk — give it a tight sandbox and no secrets.",
+      "Useful, maybe. But check every step it takes.",
     ],
     high: [
       "Don't install this. It's not safe.",
@@ -71,6 +84,13 @@ const VERDICTS: Record<Lang, Record<VerdictLevel, string[]>> = {
       "Не злодей, но требовательный. Сначала границы, потом запуск.",
       "Допустим под присмотром. Проверяй, к чему прикасается.",
     ],
+    elevated: [
+      "Только ограниченное использование. Следи за каждым его действием.",
+      "Подходи с осторожностью: сначала разбери находки, потом доверяй.",
+      "Не для свободного доступа. Только под присмотром.",
+      "Повышенный риск — песочница и никаких секретов.",
+      "Может быть полезен. Но проверяй каждый его шаг.",
+    ],
     high: [
       "Не устанавливай это. Оно небезопасно.",
       "Слишком много красных флагов. Не пускай это к агенту.",
@@ -106,6 +126,13 @@ const VERDICTS: Record<Lang, Record<VerdictLevel, string[]>> = {
       "Piénsalo dos veces antes de dejarlo cerca de tus secretos.",
       "No es malicioso, pero es exigente. Pon límites primero.",
       "Permitido bajo supervisión. Revisa qué toca.",
+    ],
+    elevated: [
+      "Solo uso restringido. Vigila cada movimiento suyo.",
+      "Acércate con cuidado: revisa los hallazgos antes de confiar.",
+      "No es para acceso libre. Solo bajo supervisión.",
+      "Riesgo elevado: sandbox ajustado y nada de secretos.",
+      "Puede ser útil. Pero revisa cada paso que da.",
     ],
     high: [
       "No lo instales. No es seguro.",

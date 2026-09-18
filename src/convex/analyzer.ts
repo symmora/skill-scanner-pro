@@ -42,9 +42,10 @@ export interface RiskConfig {
   maxStackBonus: number;
   /** Hard cap for the final risk score. */
   scoreCap: number;
-  /** Score → risk level mapping. */
+  /** Score → risk class mapping. Bands: 0 | 1–30 | 31–60 | 61–75 | 76–90 | 91–100. */
   thresholds: {
     medium: number;
+    elevated: number;
     high: number;
     critical: number;
   };
@@ -56,14 +57,15 @@ export const DEFAULT_RISK_CONFIG: RiskConfig = {
   stackBonusPerExtraRule: 6,
   maxStackBonus: 24,
   scoreCap: 100,
-  thresholds: { medium: 30, high: 60, critical: 85 },
+  thresholds: { medium: 31, elevated: 61, high: 76, critical: 91 },
   severityOverrides: {},
 };
 
 function toRiskLevel(score: number, config: RiskConfig): RiskLevel {
-  const { medium, high, critical } = config.thresholds;
+  const { medium, elevated, high, critical } = config.thresholds;
   if (score >= critical) return "critical";
   if (score >= high) return "high";
+  if (score >= elevated) return "elevated";
   if (score >= medium) return "medium";
   if (score > 0) return "low";
   return "none";

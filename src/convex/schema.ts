@@ -35,6 +35,7 @@ export const RISK_LEVELS = {
   NONE: "none",
   LOW: "low",
   MEDIUM: "medium",
+  ELEVATED: "elevated",
   HIGH: "high",
   CRITICAL: "critical",
 } as const;
@@ -43,6 +44,7 @@ export const riskLevelValidator = v.union(
   v.literal(RISK_LEVELS.NONE),
   v.literal(RISK_LEVELS.LOW),
   v.literal(RISK_LEVELS.MEDIUM),
+  v.literal(RISK_LEVELS.ELEVATED),
   v.literal(RISK_LEVELS.HIGH),
   v.literal(RISK_LEVELS.CRITICAL),
 );
