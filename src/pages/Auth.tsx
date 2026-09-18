@@ -16,8 +16,8 @@ import {
 
 import { useAuth } from "@/hooks/use-auth";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Logo } from "@/components/Logo";
 import { useLanguage } from "@/lib/i18n";
-import logo from "@/assets/logo.svg";
 import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
@@ -118,12 +118,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
               <>
                 <CardHeader className="text-center">
                   <div className="flex justify-center">
-                    <img
-                      src={logo}
-                      alt={t.appName}
-                      width={64}
-                      height={64}
-                      className="mb-4 mt-4 cursor-pointer rounded-lg"
+                    <Logo
+                      className="mb-4 mt-4 size-16 cursor-pointer rounded-xl"
+                      iconClassName="size-8"
                       onClick={() => navigate("/")}
                     />
                   </div>

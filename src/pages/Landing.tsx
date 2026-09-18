@@ -13,8 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Logo } from "@/components/Logo";
 import { useLanguage } from "@/lib/i18n";
-import logo from "@/assets/logo.svg";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -101,7 +101,7 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <a href="/" className="flex items-center gap-2.5">
-            <img src={logo} alt={t.appName} className="size-7 rounded-md" />
+            <Logo />
             <span className="text-[15px] font-semibold tracking-tight">{t.appName}</span>
             <Badge variant="secondary" className="ml-1 hidden sm:inline-flex text-[11px]">
               v1
@@ -265,7 +265,7 @@ export default function Landing() {
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="" className="size-5 rounded" />
+            <Logo className="size-5" iconClassName="size-3" />
             <span>{t.appName}</span>
           </div>
           <span>{t.footerNote}</span>

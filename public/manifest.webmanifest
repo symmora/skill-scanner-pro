@@ -1,6 +1,6 @@
 {
-  "name": "ДИТ-сканер (DIT-scanner)",
-  "short_name": "ДИТ-сканер",
+  "name": "Скилл-сканер (Skill-scanner)",
+  "short_name": "Скилл-сканер",
   "description": "Сканер рисков навыков ИИ-агентов: вредоносные действия и скрытые инструменты",
   "start_url": "/",
   "display": "standalone",

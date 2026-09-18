@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/use-auth";
-import logo from "@/assets/logo.svg";
+import { Logo } from "@/components/Logo";
 import { LogOut, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ export function DashboardHeader({
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
         <div className="flex min-w-0 items-center gap-2.5">
-          <img src={logo} alt={t.appName} className="size-7 shrink-0 rounded-md" />
+          <Logo />
           <span className="truncate text-[15px] font-semibold tracking-tight">
             {t.appName}
           </span>
