@@ -34,6 +34,41 @@ interface Rule {
   patterns: RegExp[];
 }
 
+/** Deployment-tunable calibration for the scoring model. */
+export interface RiskConfig {
+  /** Bonus per additional distinct rule beyond the first hit. */
+  stackBonusPerExtraRule: number;
+  /** Upper bound on the total stacking bonus. */
+  maxStackBonus: number;
+  /** Hard cap for the final risk score. */
+  scoreCap: number;
+  /** Score → risk level mapping. */
+  thresholds: {
+    medium: number;
+    high: number;
+    critical: number;
+  };
+  /** Per-rule severity overrides, keyed by rule id. */
+  severityOverrides: Record<string, number>;
+}
+
+export const DEFAULT_RISK_CONFIG: RiskConfig = {
+  stackBonusPerExtraRule: 6,
+  maxStackBonus: 24,
+  scoreCap: 100,
+  thresholds: { medium: 30, high: 60, critical: 85 },
+  severityOverrides: {},
+};
+
+function toRiskLevel(score: number, config: RiskConfig): RiskLevel {
+  const { medium, high, critical } = config.thresholds;
+  if (score >= critical) return "critical";
+  if (score >= high) return "high";
+  if (score >= medium) return "medium";
+  if (score > 0) return "low";
+  return "none";
+}
+
 const RULES: Rule[] = [
   // ── Obfuscation ────────────────────────────────────────────────────────
   {
@@ -143,8 +178,9 @@ const RULES: Rule[] = [
       "MCP/extension configs that call extra servers, run arbitrary commands, or auto-approve can expose tools the user never agreed to.",
     severity: 80,
     patterns: [
-      /mcpServers[\s\S]{0,200}command\s*:/gi,
-      /allowedTools\s*:\s*\[\s*['"]\*/gi,
+      // tolerate both YAML (command:) and JSON ("command":) key styles
+      /["']?mcpServers["']?[\s\S]{0,200}["']?command["']?\s*:/gi,
+      /["']?allowedTools["']?\s*:\s*\[\s*['"]\*["']?/gi,
       /"(alwaysAllow|autoApprove|dangerouslySkipPermissions)"\s*:\s*true/gi,
       /--allow-all|--yolo|--dangerously/gi,
       /npx\b[^;&]*\b(sh|bash|curl|node\s+-e)\b/gi,
@@ -199,20 +235,6 @@ const RULES: Rule[] = [
   },
 ];
 
-const SEVERITY_CAP = 100;
-/** Each additional distinct rule beyond the first nudges the score up a bit,
- *  so a skill that hits many weak rules still scores as suspicious overall. */
-const STACK_BONUS_PER_EXTRA_RULE = 6;
-const MAX_STACK_BONUS = 24;
-
-function toRiskLevel(score: number): RiskLevel {
-  if (score >= 85) return "critical";
-  if (score >= 60) return "high";
-  if (score >= 30) return "medium";
-  if (score > 0) return "low";
-  return "none";
-}
-
 /** Only flag encoded blobs when the text otherwise looks like config/code;
  *  prose in a description rarely warrants the ENCODED_SECRETS heuristic. */
 function looksLikeConfigOrCode(text: string): boolean {
@@ -222,11 +244,12 @@ function looksLikeConfigOrCode(text: string): boolean {
   );
 }
 
-export function analyzeSkill(input: SkillInput): SkillAnalysis {
+export function analyzeSkill(input: SkillInput, config: RiskConfig = DEFAULT_RISK_CONFIG): SkillAnalysis {
   const haystack = `${input.name}\n${input.description ?? ""}\n${input.body}`;
   const findings: Finding[] = [];
 
   for (const rule of RULES) {
+    const severity = config.severityOverrides[rule.id] ?? rule.severity;
     const evidence: string[] = [];
     const seen = new Set<string>();
     for (const pattern of rule.patterns) {
@@ -248,12 +271,16 @@ export function analyzeSkill(input: SkillInput): SkillAnalysis {
     if (rule.id === "ENCODED_SECRETS" && !looksLikeConfigOrCode(haystack)) {
       continue;
     }
+    // A severity override of 0 (or below) disables the rule entirely.
+    if (severity <= 0) {
+      continue;
+    }
 
     findings.push({
       ruleId: rule.id,
       title: rule.title,
       detail: rule.detail,
-      severity: rule.severity,
+      severity,
       evidence,
     });
   }
@@ -263,14 +290,14 @@ export function analyzeSkill(input: SkillInput): SkillAnalysis {
   const maxSeverity = findings.length > 0 ? findings[0].severity : 0;
   const distinctRules = new Set(findings.map((f) => f.ruleId)).size;
   const stackBonus = Math.min(
-    Math.max(0, distinctRules - 1) * STACK_BONUS_PER_EXTRA_RULE,
-    MAX_STACK_BONUS,
+    Math.max(0, distinctRules - 1) * config.stackBonusPerExtraRule,
+    config.maxStackBonus,
   );
-  const riskScore = Math.min(maxSeverity + stackBonus, SEVERITY_CAP);
+  const riskScore = Math.min(maxSeverity + stackBonus, config.scoreCap);
 
   return {
     riskScore,
-    riskLevel: toRiskLevel(riskScore),
+    riskLevel: toRiskLevel(riskScore, config),
     findings,
   };
 }

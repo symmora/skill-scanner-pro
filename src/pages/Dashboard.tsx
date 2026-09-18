@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
 import { getRuleMeta } from "@/lib/rule-catalog";
+import { downloadAssessmentProtocol } from "@/lib/assessment-protocol";
 import {
   downloadMarkdownReport,
   reportFileName,
@@ -216,6 +217,15 @@ function SkillListItem({
               variant="ghost"
               size="sm"
               className="gap-1.5 text-muted-foreground hover:text-brand-600 dark:hover:text-brand-300"
+              onClick={() => downloadAssessmentProtocol(skill, language)}
+            >
+              <Download className="size-3.5" />
+              {t.exportReport}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-muted-foreground hover:text-foreground"
               onClick={() =>
                 downloadMarkdownReport(
                   reportFileName(skill.name),
@@ -224,7 +234,7 @@ function SkillListItem({
               }
             >
               <Download className="size-3.5" />
-              {t.exportReport}
+              {language === "ru" ? "Скачать отчёт" : "Export raw report"}
             </Button>
             <Button
               variant="ghost"

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Скилл-сканер — блок-схема анализа</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --card: #131a2b;
+    --card-border: #1f2a44;
+    --text: #e2e8f0;
+    --muted: #8b98b5;
+    --blue: #60a5fa;
+    --cyan: #22d3ee;
+    --orange: #fb923c;
+    --red: #f87171;
+    --green: #4ade80;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background:
+      radial-gradient(1200px 500px at 20% -10%, rgba(96,165,250,.12), transparent 60%),
+      radial-gradient(1000px 500px at 90% 10%, rgba(167,139,250,.10), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: 40px 24px 80px;
+  }
+  h1 { text-align: center; font-size: 26px; letter-spacing: .2px; }
+  h1 span { background: linear-gradient(90deg, var(--blue), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { text-align: center; color: var(--muted); margin: 10px auto 34px; max-width: 720px; font-size: 14px; line-height: 1.6; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 1240px; margin: 0 auto; }
+  .stage {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: "";
+    position: absolute; inset: 0 auto 0 0; width: 3px;
+    background: var(--stage-color, var(--blue));
+  }
+  .stage h2 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1.4px;
+    color: var(--stage-color, var(--blue)); margin-bottom: 4px;
+  }
+  .stage .range { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+  .node {
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,.02);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 10px;
+  }
+  .node b { color: var(--text); }
+  .node .id {
+    display: inline-block; min-width: 46px; text-align: center;
+    font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+    font-size: 11px; font-weight: 700;
+    border-radius: 6px; padding: 1px 7px; margin-right: 8px;
+    background: color-mix(in srgb, var(--stage-color, var(--blue)) 18%, transparent);
+    color: var(--stage-color, var(--blue));
+    border: 1px solid color-mix(in srgb, var(--stage-color, var(--blue)) 40%, transparent);
+  }
+  .branch { font-size: 12.5px; color: var(--muted); margin-top: 6px; padding-left: 2px; }
+  .branch .if { color: var(--orange); font-weight: 600; }
+  .branch .then { color: var(--green); font-weight: 600; }
+  .branch .stop { color: var(--red); font-weight: 600; }
+  .arrow {
+    text-align: center; color: var(--muted); font-size: 16px;
+    margin: -2px 0 10px;
+  }
+  .verdict {
+    max-width: 1240px; margin: 26px auto 0;
+    border: 1px solid color-mix(in srgb, var(--purple) 45%, transparent);
+    background: color-mix(in srgb, var(--purple) 7%, var(--card));
+  }
+  .verdict::before { background: var(--purple); }
+  .verdict h2 { color: var(--purple); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip {
+    font-size: 12px; padding: 5px 12px; border-radius: 999px; border: 1px solid;
+  }
+  .chip.crit { color: var(--red); border-color: color-mix(in srgb, var(--red) 50%, transparent); background: color-mix(in srgb, var(--red) 10%, transparent); }
+  .chip.high { color: var(--orange); border-color: color-mix(in srgb, var(--orange) 50%, transparent); background: color-mix(in srgb, var(--orange) 10%, transparent); }
+  .chip.med { color: #facc15; border-color: rgba(250,204,21,.5); background: rgba(250,204,21,.08); }
+  .chip.low { color: var(--cyan); border-color: color-mix(in srgb, var(--cyan) 50%, transparent); background: color-mix(in srgb, var(--cyan) 10%, transparent); }
+  .chip.ok { color: var(--green); border-color: color-mix(in srgb, var(--green) 50%, transparent); background: color-mix(in srgb, var(--green) 10%, transparent); }
+  .rule { margin-top: 12px; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .rule b { color: var(--text); }
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 30px; }
+  footer a { color: var(--blue); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>🛡️ <span>Плейбук анализа на уязвимости</span></h1>
+<p class="sub">Строгая последовательность: идёшь сверху вниз, на каждом узле — ветка «если → то».
+Стоп-флаги (🔴) завершают анализ досрочно с вердиктом. Полная версия: <b>docs/analysis-playbook.md</b>.</p>
+
+<div class="grid">
+
+  <div class="stage" style="--stage-color: var(--blue)">
+    <h2>Этап I — Подготовка</h2>
+    <div class="range">Шаги 0–2</div>
+    <div class="node"><span class="id">S0</span><b>Источник</b>
+      <div class="branch"><span class="if">если</span> блог/чат/файл от кого-то → <span class="then">пометить untrusted</span>, настороженность выше</div>
+      <div class="branch"><span class="if">если</span> git без истории/с squash → <span class="then">жёлтый флаг</span></div>
+    </div>
+    <div class="node"><span class="id">S1</span><b>Паспорт анализа</b> — имя, хэш, дата, тип. Без паспорта дальше не идти.</div>
+    <div class="node"><span class="id">S2</span><b>Поверхность атаки</b> — что максимум может сделать?
+      <div class="branch"><span class="if">если</span> поверхность пуста → <span class="then">риск 0, стоп</span></div>
+    </div>
+  </div>
+
+  <div class="stage" style="--stage-color: var(--cyan)">
+    <h2>Этап II — Автоскан</h2>
+    <div class="range">Шаги 3–4</div>
+    <div class="node"><span class="id">S3</span><b>Скилл-сканер</b> → оценка 0–100
+      <div class="branch"><span class="if">если</span> ≥60 → <span class="then">полный ручной проход</span></div>
+      <div class="branch"><span class="if">если</span> 1–59 → <span class="then">сокращённый чеклист</span> (S5,7,9,11,13)</div>
+      <div class="branch"><span class="if">если</span> 0 → <span class="then">всё равно ручной</span>, эвристика не истина</div>
+    </div>
+    <div class="node"><span class="id">S4</span><b>Разбор находок</b> — по цитате решить
+      <div class="branch"><span class="if">если</span> FP → пометить + обосновать</div>
+      <div class="branch"><span class="if">если</span> сомнение → <span class="then">добить вручную</span></div>
+    </div>
+  </div>
+
+  <div class="stage" style="--stage-color: var(--orange)">
+    <h2>Этап III — Ручной проход</h2>
+    <div class="range">Шаги 5–14</div>
+    <div class="node"><span class="id">S5</span><b>Обфускация</b>
+      <div class="branch"><span class="if">если</span> блоб декодировался в код → <span class="stop">🔴 CRITICAL, стоп</span></div>
+    </div>
+    <div class="node"><span class="id">S6</span><b>Эксфильтрация</b> — сеть + секреты/файлы
+      <div class="branch"><span class="if">если</span> вместе → <span class="stop">🔴 CRITICAL, стоп</span></div>
+      <div class="branch"><span class="if">если</span> только сеть → WHOIS/репутация доменов</div>
+    </div>
+    <div class="node"><span class="id">S7</span><b>Prompt-инъекции</b>
+      <div class="branch"><span class="if">если</span> прямая → CRITICAL для prompt/extension</div>
+    </div>
+    <div class="node"><span class="id">S8</span><b>Shadow-инструменты</b> (MCP)
+      <div class="branch"><span class="if">если</span> wildcard/autoApprove → <span class="stop">🔴 HIGH–CRITICAL</span></div>
+    </div>
+    <div class="node"><span class="id">S9</span><b>Persistence</b>
+      <div class="branch"><span class="if">если</span> пишет в автозагрузку → HIGH</div>
+    </div>
+    <div class="node"><span class="id">S10</span><b>Эскалация</b>
+      <div class="branch"><span class="if">если</span> sudo/setuid без причины → HIGH</div>
+    </div>
+    <div class="node"><span class="id">S11</span><b>Тихая установка</b>
+      <div class="branch"><span class="if">если</span> свежий/тайпсквоттинг пакет → HIGH</div>
+    </div>
+    <div class="node"><span class="id">S12</span><b>Широкий доступ к ФС</b>
+      <div class="branch"><span class="if">если</span> вне рабочей папки → MEDIUM–HIGH</div>
+    </div>
+    <div class="node"><span class="id">S13</span><b>Сетевые сюрпризы</b> — порты, nc, DNS-туннели
+      <div class="branch"><span class="if">если</span> не объяснимо функцией → HIGH</div>
+    </div>
+    <div class="node"><span class="id">S14</span><b>Комбинаторика</b> — безобидные куски вместе = атака
+      <div class="branch">сеть+секреты · инъекция+tools · install+persistence → <span class="stop">🔴 CRITICAL</span></div>
+    </div>
+  </div>
+
+  <div class="stage verdict">
+    <h2>Этап IV — Вердикт</h2>
+    <div class="range">Шаг 15</div>
+    <div class="chips">
+      <span class="chip crit">CRITICAL → отклонить</span>
+      <span class="chip high">HIGH → отклонить / жёсткие условия</span>
+      <span class="chip med">MEDIUM → с ограничениями</span>
+      <span class="chip low">LOW → наблюдать</span>
+      <span class="chip ok">ЧИСТО → можно</span>
+    </div>
+    <div class="rule"><b>Протокол:</b> вердикт, оценка ± корректировка, находки+FP, уверенность, рекомендация.</div>
+    <div class="rule"><b>Обновление навыка = новый анализ.</b> Хэш изменился — плейбук с нуля.</div>
+  </div>
+
+</div>
+
+<footer>skill-scanner-pro · <a href="./analysis-playbook.md">полная методика</a> · Стоп-флаги 🔴 завершают анализ досрочно</footer>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { analyzeSkill } from "./analyzer";
+import { loadRiskConfig } from "./risk_config";
 import type { Finding, RiskLevel, SkillKind } from "./schema";
 
 export const submitSkill = mutation({
@@ -31,12 +32,15 @@ export const submitSkill = mutation({
       throw new Error("Skill content is required");
     }
 
-    const analysis = analyzeSkill({
-      name,
-      description: args.description?.trim() || undefined,
-      kind: args.kind,
-      body,
-    });
+    const analysis = analyzeSkill(
+      {
+        name,
+        description: args.description?.trim() || undefined,
+        kind: args.kind,
+        body,
+      },
+      loadRiskConfig(),
+    );
 
     const skillId = await ctx.db.insert("scannedSkills", {
       userId,
