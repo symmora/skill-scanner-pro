@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
 import { getRuleMeta } from "@/lib/rule-catalog";
 import { downloadAssessmentProtocol } from "@/lib/assessment-protocol";
+import { getVerdictMessage, type VerdictLevel } from "@/lib/verdict-messages";
 import {
   downloadMarkdownReport,
   reportFileName,
@@ -164,6 +165,18 @@ function SkillListItem({
 
       {open && (
         <div className="mt-4 ml-10 space-y-3 border-l-2 border-border/70 pl-4">
+          <p
+            className={cn(
+              "rounded-lg border px-3.5 py-2.5 text-sm font-medium leading-6",
+              isFlagged
+                ? "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400"
+                : skill.riskLevel === "medium"
+                  ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                  : "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+            )}
+          >
+            {getVerdictMessage(skill.riskLevel as VerdictLevel, language, skill.name)}
+          </p>
           {skill.description && (
             <p className="text-sm leading-6 text-muted-foreground">{skill.description}</p>
           )}
@@ -259,7 +272,7 @@ const FILTERS = [
 ] as const;
 
 export default function Dashboard() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const skills = useQuery(api.skills.listMySkills);
   const submitSkill = useMutation(api.skills.submitSkill);
   const removeSkill = useMutation(api.skills.removeSkill);
@@ -305,7 +318,9 @@ export default function Dashboard() {
         body,
       });
       const level = result.riskLevel as RiskLevel;
-      toast.success(t.toastScanned(name.trim(), result.riskScore, t.riskLabels[level]));
+      toast.success(
+        `${t.toastScanned(name.trim(), result.riskScore, t.riskLabels[level])} — ${getVerdictMessage(level as VerdictLevel, language, name.trim())}`,
+      );
       setName("");
       setDescription("");
       setBody("");

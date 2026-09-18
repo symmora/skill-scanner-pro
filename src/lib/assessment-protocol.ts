@@ -1,5 +1,6 @@
 import type { Doc } from "@/convex/_generated/dataModel";
 import { getRuleMeta } from "@/lib/rule-catalog";
+import { getVerdictMessage, type VerdictLevel } from "@/lib/verdict-messages";
 
 type Skill = Doc<"scannedSkills">;
 type Language = "en" | "ru";
@@ -52,10 +53,17 @@ export function buildAssessmentProtocol(skill: Skill, language: Language): strin
 
   const lines: string[] = [];
 
+  const verdictMsg = getVerdictMessage(
+    skill.riskLevel as VerdictLevel,
+    language,
+    skill.name,
+  );
   // ── Headline: the final score first ──────────────────────────────────
   lines.push(`# ${ru ? "Протокол оценки навыка" : "Skill assessment protocol"}`);
   lines.push("");
   lines.push(`## ${ru ? "Итоговый скор" : "Final score"}: ${skill.riskScore} / 100 — ${level}`);
+  lines.push("");
+  lines.push(`> ${verdictMsg}`);
   lines.push("");
   lines.push(`${ru ? "Рекомендация" : "Recommendation"}: **${recommendation}**`);
   lines.push("");
