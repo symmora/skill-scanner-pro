@@ -104,6 +104,34 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     }
   };
 
+  // Recovery: return from the code step to the email step with a clean state.
+  const handleBackToEmail = () => {
+    setStep("signIn");
+    setOtp("");
+    setError(null);
+    setIsLoading(false);
+  };
+
+  // Recovery: send a fresh code to the same email without retyping it.
+  const handleResendCode = async () => {
+    if (step === "signIn") return;
+    const email = step.email;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      await signIn("email-otp", formData);
+    } catch (error) {
+      console.error("Resend code error:", error);
+      setError(
+        error instanceof Error && error.message ? error.message : t.sendFailed,
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col">
       <div className="absolute right-4 top-4 z-10">
@@ -185,6 +213,19 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             ) : (
               <>
                 <CardHeader className="mt-4 text-center">
+                  <div className="mb-2 flex justify-start">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="-ml-2 gap-1.5 text-muted-foreground"
+                      onClick={handleBackToEmail}
+                      disabled={isLoading}
+                    >
+                      <ArrowLeft className="size-4" />
+                      {t.back}
+                    </Button>
+                  </div>
                   <CardTitle>{t.checkEmail}</CardTitle>
                   <CardDescription>{t.codeSent(step.email)}</CardDescription>
                 </CardHeader>
@@ -227,7 +268,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       <Button
                         variant="link"
                         className="h-auto p-0"
-                        onClick={() => setStep("signIn")}
+                        onClick={handleResendCode}
+                        disabled={isLoading}
                       >
                         {t.tryAgain}
                       </Button>
