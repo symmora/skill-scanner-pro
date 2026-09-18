@@ -66,8 +66,8 @@ export const RULE_CATALOG: Record<string, RuleMeta> = {
       ru: "Перехват инструкций в тексте навыка",
     },
     detail: {
-      en: "Phrases like 'ignore previous instructions' or 'you must now' try to hijack the agent away from the user's intent — the core malicious movement for prompt/extension skills.",
-      ru: "Фразы вроде «игнорируй предыдущие инструкции» или «теперь ты должен» пытаются увести агента от намерений пользователя — это основное вредоносное действие для prompt/extension-навыков.",
+      en: "Phrases like 'ignore previous instructions' or 'you must now' try to hijack the agent away from the user's intent — the core malicious movement for prompt/extension skills. Detects both English and Russian phrasing.",
+      ru: "Фразы вроде «игнорируй предыдущие инструкции» или «теперь ты должен» пытаются увести агента от намерений пользователя — это основное вредоносное действие для prompt/extension-навыков. Работает и для английских, и для русских формулировок.",
     },
   },
   TOOL_HIJACK: {
@@ -97,7 +97,7 @@ export const RULE_CATALOG: Record<string, RuleMeta> = {
     },
     detail: {
       en: "Writing cron jobs, shell profiles, launch agents, or autostart entries means the skill wants to keep running after the session ends.",
-      ru: "Запись в cron, профили shell, launch agents или автозагрузку означает, что навык хочет продолжать работать после завершения сессии.",
+      ru: "Запись в cron, профили shell, launch agents, автозагрузку или планировщик задач означает, что навык хочет продолжать работать после завершения сессии.",
     },
   },
   PRIVILEGE_ESCALATION: {

@@ -18,8 +18,14 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
 import { getRuleMeta } from "@/lib/rule-catalog";
 import {
+  downloadMarkdownReport,
+  reportFileName,
+  skillToMarkdown,
+} from "@/lib/report";
+import {
   AlertTriangle,
   ChevronDown,
+  Download,
   FileSearch,
   Loader2,
   Plus,
@@ -205,7 +211,21 @@ function SkillListItem({
               );
             })
           )}
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-muted-foreground hover:text-brand-600 dark:hover:text-brand-300"
+              onClick={() =>
+                downloadMarkdownReport(
+                  reportFileName(skill.name),
+                  skillToMarkdown(skill, language),
+                )
+              }
+            >
+              <Download className="size-3.5" />
+              {t.exportReport}
+            </Button>
             <Button
               variant="ghost"
               size="sm"

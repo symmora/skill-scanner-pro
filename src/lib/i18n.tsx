@@ -119,6 +119,7 @@ const en = {
     "No manipulation patterns detected — every rule came back clean.",
   severity: "sev",
   removeFromList: "Remove from list",
+  exportReport: "Export report",
   showFindings: "Show findings",
   hideFindings: "Hide findings",
 
@@ -260,6 +261,7 @@ const ru: Dict = {
   noFindings: "Манипулятивные паттерны не обнаружены — все правила пройдены чисто.",
   severity: "вес",
   removeFromList: "Убрать из списка",
+  exportReport: "Экспорт отчёта",
   showFindings: "Показать находки",
   hideFindings: "Скрыть находки",
 

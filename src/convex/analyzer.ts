@@ -114,7 +114,7 @@ const RULES: Rule[] = [
     id: "PROMPT_INJECTION",
     title: "Instruction override inside skill text",
     detail:
-      "Phrases like 'ignore previous instructions' or 'you must now' try to hijack the agent away from the user's intent — the core malicious movement for prompt/extension skills.",
+      "Phrases like 'ignore previous instructions' or 'you must now' try to hijack the agent away from the user's intent — the core malicious movement for prompt/extension skills. Detects both English and Russian phrasing.",
     severity: 90,
     patterns: [
       /ignore\s+(all\s+)?(previous|prior|above)\s+instructions/gi,
@@ -125,6 +125,15 @@ const RULES: Rule[] = [
       /you\s+are\s+now\s+(a|an)\s+/gi,
       /(new|override)\s+(system\s+)?instructions\s*:/gi,
       /keep\s+this\s+(secret|hidden|between\s+us)/gi,
+      // Russian-language injection phrases (no \b — it is ASCII-only in JS regex)
+      /игнор(?:ируй|ировать)\s+(?:все\s+)?(?:предыдущие|прошлые|прежние|выше(?:указанные|написанные)?)\s+(?:инструкции|указания|правила)/gi,
+      /проигнорируй\s+(?:все\s+)?(?:предыдущие|прошлые|прежние)/gi,
+      /забудь\s+(?:вс[её]|все),?\s+что\s+тебе\s+(?:говорили|сказали)/gi,
+      /не\s+(?:говори|рассказывай|сообщай|упоминай|показывай)\s+(?:об\s+этом|пользователю|человеку|нему)/gi,
+      /не\s+(?:раскрывай|разглашай)\s+(?:эти|это|их|такие)\s+(?:инструкции|указания|правила)/gi,
+      /(?:скрой\s+это|держи\s+это\s+в\s+секрете|держи\s+в\s+секрете)/gi,
+      /теперь\s+ты\s+(?:работаешь|действуешь|ведёшь\s+себя)\s+как/gi,
+      /системн(?:ый|ые|ая)\s+(?:промпт|инструкци\w+)\s*:/gi,
     ],
   },
   {
@@ -168,6 +177,8 @@ const RULES: Rule[] = [
       /~\/\.(bashrc|zshrc|profile|bash_profile)/gi,
       /LaunchAgents|autostart/gi,
       /registry\s+run|RunOnce|CurrentVersion\\Run/gi,
+      // Russian technical terms
+      /автозагрузк|автозапуск|планировщик\s+задач|автостарт/gi,
     ],
   },
 
