@@ -18,7 +18,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Logo } from "@/components/Logo";
 import { useLanguage } from "@/lib/i18n";
-import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
@@ -127,9 +127,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                   <CardTitle className="text-xl">{t.authTitle}</CardTitle>
                   <CardDescription>{t.authSubtitle}</CardDescription>
                 </CardHeader>
-                <form onSubmit={handleEmailSubmit}>
-                  <CardContent>
-                    <div className="relative flex items-center gap-2">
+              <form onSubmit={handleEmailSubmit}>
+                <CardContent>
+                  <div className="relative flex items-center gap-2">
                       <div className="relative flex-1">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input

@@ -156,6 +156,7 @@ const en = {
 
   // Loading
   routeLoading: "Loading...",
+  back: "Back",
 
   // Language switcher
   language: "Language",
@@ -292,6 +293,7 @@ const ru: Dict = {
   securedBy: "Защищено",
 
   routeLoading: "Загрузка...",
+  back: "Назад",
 
   language: "Язык",
 };
