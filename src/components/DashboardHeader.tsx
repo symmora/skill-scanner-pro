@@ -25,9 +25,9 @@ export function DashboardHeader({
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
         <div className="flex min-w-0 items-center gap-2.5">
-          <img src={logo} alt="Aegis Scanner logo" className="size-7 shrink-0 rounded-md" />
+          <img src={logo} alt={t.appName} className="size-7 shrink-0 rounded-md" />
           <span className="truncate text-[15px] font-semibold tracking-tight">
-            Aegis Scanner
+            {t.appName}
           </span>
           {stats && (
             <Badge variant="secondary" className="ml-1 hidden sm:inline-flex text-[11px]">

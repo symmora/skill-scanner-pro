@@ -101,8 +101,8 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <a href="/" className="flex items-center gap-2.5">
-            <img src={logo} alt="Aegis Scanner logo" className="size-7 rounded-md" />
-            <span className="text-[15px] font-semibold tracking-tight">Aegis Scanner</span>
+            <img src={logo} alt={t.appName} className="size-7 rounded-md" />
+            <span className="text-[15px] font-semibold tracking-tight">{t.appName}</span>
             <Badge variant="secondary" className="ml-1 hidden sm:inline-flex text-[11px]">
               v1
             </Badge>
@@ -266,7 +266,7 @@ export default function Landing() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
             <img src={logo} alt="" className="size-5 rounded" />
-            <span>Aegis Scanner</span>
+            <span>{t.appName}</span>
           </div>
           <span>{t.footerNote}</span>
         </div>

@@ -120,7 +120,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                   <div className="flex justify-center">
                     <img
                       src={logo}
-                      alt="Aegis Scanner logo"
+                      alt={t.appName}
                       width={64}
                       height={64}
                       className="mb-4 mt-4 cursor-pointer rounded-lg"

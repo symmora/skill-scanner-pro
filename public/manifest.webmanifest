@@ -1,7 +1,7 @@
 {
-  "name": "freebuff.com application",
-  "short_name": "freebuff.com",
-  "description": "freebuff.com application",
+  "name": "ДИТ-сканер (DIT-scanner)",
+  "short_name": "ДИТ-сканер",
+  "description": "Сканер рисков навыков ИИ-агентов: вредоносные действия и скрытые инструменты",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
