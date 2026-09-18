@@ -102,7 +102,7 @@ export default function Landing() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <a href="/" className="flex items-center gap-2.5">
             <Logo />
-            <span className="text-[15px] font-semibold tracking-tight">{t.appName}</span>
+            <span className="text-[15px] font-semibold leading-none tracking-tight">{t.appName}</span>
             <Badge variant="secondary" className="ml-1 hidden sm:inline-flex text-[11px]">
               v1
             </Badge>

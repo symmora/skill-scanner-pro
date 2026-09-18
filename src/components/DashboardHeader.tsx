@@ -26,7 +26,7 @@ export function DashboardHeader({
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
         <div className="flex min-w-0 items-center gap-2.5">
           <Logo />
-          <span className="truncate text-[15px] font-semibold tracking-tight">
+          <span className="truncate text-[15px] font-semibold leading-none tracking-tight">
             {t.appName}
           </span>
           {stats && (
