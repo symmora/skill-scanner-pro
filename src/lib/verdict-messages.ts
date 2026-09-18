@@ -7,7 +7,7 @@
  * and the downloaded protocol stays stable across re-downloads.
  */
 
-type Lang = "en" | "ru";
+type Lang = "en" | "ru" | "es";
 
 export type VerdictLevel = "none" | "low" | "medium" | "high" | "critical";
 
@@ -83,7 +83,43 @@ const VERDICTS: Record<Lang, Record<VerdictLevel, string[]>> = {
       "Не прикасайся к нему. Это небезопасно.",
       "Это атака, а не навык. Обойди стороной.",
       "Обращаться с этим не нужно вообще. Удалить и забыть.",
-      "Красный код: внутри подтверждённые вредоносные паттерны.",
+      "Красный код: внутри подтверждённые вредоносные паттерны.",    ],
+  },
+  es: {
+    none: [
+      "Skill excelente. Cuídalo bien.",
+      "Limpio como el cristal. Se ganó su lugar.",
+      "Nada de qué preocuparse. Úsalo sin miedo.",
+      "Una rareza: un skill que no esconde nada.",
+      "Pasó la revisión con matrícula de honor.",
+    ],
+    low: [
+      "Se ve seguro, solo mantén el ojo abierto.",
+      "Pequeñas rarezas, nada hostil. Se puede usar.",
+      "Riesgo bajo. Vale la pena ojear los hallazgos.",
+      "Nada de miedo. Curiosidad sí, preocupación no.",
+      "Suficientemente limpio. Anota los hallazgos y sigue.",
+    ],
+    medium: [
+      "Se puede usar, pero con restricciones. Lee los hallazgos primero.",
+      "Tiene bordes afilados. Sandboxed y sin confiar a ciegas.",
+      "Piénsalo dos veces antes de dejarlo cerca de tus secretos.",
+      "No es malicioso, pero es exigente. Pon límites primero.",
+      "Permitido bajo supervisión. Revisa qué toca.",
+    ],
+    high: [
+      "No lo instales. No es seguro.",
+      "Demasiadas banderas rojas. Mantenlo lejos de tu agente.",
+      "Este pide demasiado. Di que no.",
+      "Al borde de la hostilidad. Mejor rechazar que lamentar.",
+      "Tu agente te lo agradecerá si lo saltas.",
+    ],
+    critical: [
+      "No lo toques más. No es seguro.",
+      "No lo toques. No es seguro.",
+      "Esto es un ataque, no un skill. Aléjate.",
+      "No hay forma segura de manejarlo. Bórralo y olvídalo.",
+      "Código rojo: patrones maliciosos confirmados dentro.",
     ],
   },
 };

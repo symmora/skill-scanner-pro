@@ -34,10 +34,12 @@ export function skillToMarkdown(skill: ScannedSkill, language: Language): string
     critical: s.levelCritical,
   };
 
-  const analyzed = new Date(skill.analyzedAt).toLocaleString(
-    language === "ru" ? "ru-RU" : "en-US",
-    { dateStyle: "long", timeStyle: "short" },
-  );
+  const locale =
+    language === "ru" ? "ru-RU" : language === "es" ? "es-ES" : "en-US";
+  const analyzed = new Date(skill.analyzedAt).toLocaleString(locale, {
+    dateStyle: "long",
+    timeStyle: "short",
+  });
 
   const lines: string[] = [];
 

@@ -29,50 +29,56 @@ export default function Landing() {
   const DETECTION_RULES = [
     {
       icon: Braces,
-      title: { en: "Obfuscated payloads", ru: "Обфусцированные полезные нагрузки" },
+      title: { en: "Obfuscated payloads", ru: "Обфусцированные полезные нагрузки", es: "Cargas útiles ofuscadas" },
       detail: {
         en: "Base64 and hex blobs piped into shells — the classic way to smuggle a second stage past human review.",
         ru: "Base64- и hex-блоки, передаваемые в shell, — классический способ провести вторую стадию мимо проверки человеком.",
+        es: "Bloques en base64 y hex canalizados a shells — la forma clásica de colar una segunda etapa ante la revisión humana.",
       },
     },
     {
       icon: EyeOff,
-      title: { en: "Instruction hijacking", ru: "Перехват инструкций" },
+      title: { en: "Instruction hijacking", ru: "Перехват инструкций", es: "Secuestro de instrucciones" },
       detail: {
         en: "\"Ignore previous instructions\" and silent overrides that turn an agent against its user mid-task.",
         ru: "«Игнорируй предыдущие инструкции» и тихая подмена поведения, которые разворачивают агента против пользователя посреди задачи.",
+        es: "«Ignora las instrucciones anteriores» y anulaciones silenciosas que vuelven al agente contra su usuario a mitad de tarea.",
       },
     },
     {
       icon: Eye,
-      title: { en: "Quiet exfiltration", ru: "Тихая эксфильтрация" },
+      title: { en: "Quiet exfiltration", ru: "Тихая эксфильтрация", es: "Exfiltración silenciosa" },
       detail: {
         en: "curl-to-server posts, env harvesting, and credential sweeps that ship your data out without a trace.",
         ru: "POST-запросы на сервер, сбор переменных окружения и учётных данных — отправка ваших данных без следа.",
+        es: "POSTs a servidores, recolección de variables de entorno y barridos de credenciales que sacan tus datos sin dejar rastro.",
       },
     },
     {
       icon: Terminal,
-      title: { en: "Hidden tooling", ru: "Скрытые инструменты" },
+      title: { en: "Hidden tooling", ru: "Скрытые инструменты", es: "Herramientas ocultas" },
       detail: {
         en: "Shadow MCP servers, wildcard tool grants, and auto-approve flags that expose tools you never agreed to.",
         ru: "Теневые MCP-серверы, wildcard-доступ к инструментам и флаги авто-подтверждения, открывающие инструменты, на которые вы не соглашались.",
+        es: "Servidores MCP ocultos, permisos de herramientas comodín y banderas de autoaprobación que exponen herramientas que nunca aceptaste.",
       },
     },
     {
       icon: FileSearch,
-      title: { en: "Persistence tricks", ru: "Закрепление в системе" },
+      title: { en: "Persistence tricks", ru: "Закрепление в системе", es: "Persistencia en el sistema" },
       detail: {
         en: "Cron entries, shell-profile edits, and launch agents that let a skill survive the session it was born in.",
         ru: "Записи в cron, правки профилей shell и launch agents, позволяющие навыку пережить сессию, в которой он родился.",
+        es: "Entradas de cron, ediciones de perfiles de shell y launch agents que permiten al skill sobrevivir a la sesión en la que nació.",
       },
     },
     {
       icon: ShieldCheck,
-      title: { en: "Privilege grabs", ru: "Захват привилегий" },
+      title: { en: "Privilege grabs", ru: "Захват привилегий", es: "Escalada de privilegios" },
       detail: {
         en: "sudo calls, setuid bits, and container escapes a helper skill should never need.",
         ru: "Вызовы sudo, setuid-биты и побеги из контейнера — то, что навыку-помощнику никогда не нужно.",
+        es: "Llamadas a sudo, bits setuid y escapes de contenedor que un skill auxiliar nunca debería necesitar.",
       },
     },
   ];

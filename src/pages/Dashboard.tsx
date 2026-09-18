@@ -122,9 +122,7 @@ function SkillListItem({
             </Badge>
             {skill.findings.length > 0 && (
               <span className="text-[11px] text-muted-foreground">
-                {language === "ru"
-                  ? t.findingsRu(skill.findings.length)
-                  : t.findings(skill.findings.length)}
+                {t.findings(skill.findings.length)}
               </span>
             )}
           </div>
@@ -247,7 +245,7 @@ function SkillListItem({
               }
             >
               <Download className="size-3.5" />
-              {language === "ru" ? "Скачать отчёт" : "Export raw report"}
+              {language === "ru" ? "Скачать отчёт" : language === "es" ? "Descargar informe" : "Export raw report"}
             </Button>
             <Button
               variant="ghost"

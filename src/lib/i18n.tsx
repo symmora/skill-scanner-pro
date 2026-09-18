@@ -8,12 +8,14 @@ import {
   type ReactNode,
 } from "react";
 import { LANGUAGE_STORAGE_KEY } from "./language-constants";
+import es from "./i18n-es";
 
-export type Language = "en" | "ru";
+export type Language = "en" | "ru" | "es";
 
 export const LANGUAGES: { id: Language; label: string; short: string }[] = [
   { id: "en", label: "English", short: "EN" },
   { id: "ru", label: "Русский", short: "RU" },
+  { id: "es", label: "Español", short: "ES" },
 ];
 
 const en = {
@@ -300,7 +302,7 @@ const ru: Dict = {
   language: "Язык",
 };
 
-const DICTS: Record<Language, Dict> = { en, ru };
+const DICTS: Record<Language, Dict> = { en, ru, es };
 
 interface LanguageContextValue {
   language: Language;
@@ -313,12 +315,14 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 function detectInitialLanguage(): Language {
   try {
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    if (stored === "en" || stored === "ru") return stored;
+    if (stored === "en" || stored === "ru" || stored === "es") return stored;
   } catch {
     // localStorage unavailable — fall through to browser detection
   }
   const nav = typeof navigator !== "undefined" ? navigator.language.toLowerCase() : "en";
-  return nav.startsWith("ru") ? "ru" : "en";
+  if (nav.startsWith("ru")) return "ru";
+  if (nav.startsWith("es")) return "es";
+  return "en";
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
