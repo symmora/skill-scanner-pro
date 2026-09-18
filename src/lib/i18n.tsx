@@ -38,7 +38,7 @@ const en = {
   mockCount: (n: number) => `${n} skills analyzed`,
   howTitle: "Three steps, no agent required",
   howSubtitle:
-    "The scanner reads text, not behavior. Nothing executes — the riskiest skill in the world can't hurt you here.",
+    "No code is ever run. The skill is only read as text and analyzed with NLP algorithms — the riskiest skill in the world can't hurt you here.",
   rulesTitle: "Built for the movements that matter",
   rulesSubtitle:
     "Version 1 focuses on one job: reading a list of skills and telling you which ones to keep.",
@@ -93,7 +93,7 @@ const en = {
   statsClean: "Clean",
   statsTop: "Highest score",
   scanSkill: "Scan a skill",
-  scanNote: "Nothing executes — text analysis only.",
+  scanNote: "No code is ever run. The skill is only read as text and analyzed with NLP algorithms.",
   fieldName: "Name",
   fieldType: "Type",
   fieldDesc: "Description",
@@ -185,7 +185,7 @@ const ru: Dict = {
   mockCount: (n: number) => `просканировано навыков: ${n}`,
   howTitle: "Три шага, без запуска агента",
   howSubtitle:
-    "Сканер читает текст, а не поведение. Ничего не выполняется — даже самый опасный навык не может вам навредить здесь.",
+    "Никакой код не запускается. Навык только читается как текст и анализируется NLP-алгоритмами — даже самый опасный навык не может вам навредить здесь.",
   rulesTitle: "Создан для действий, которые действительно опасны",
   rulesSubtitle:
     "Версия 1 делает одну работу: читает список навыков и говорит, какие стоит оставить.",
@@ -236,7 +236,7 @@ const ru: Dict = {
   statsClean: "Чисто",
   statsTop: "Максимальная оценка",
   scanSkill: "Сканировать навык",
-  scanNote: "Ничего не выполняется — только анализ текста.",
+  scanNote: "Никакой код не запускается. Только читается как текст и анализируется NLP-алгоритмами.",
   fieldName: "Название",
   fieldType: "Тип",
   fieldDesc: "Описание",
