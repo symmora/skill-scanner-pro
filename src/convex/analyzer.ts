@@ -185,7 +185,10 @@ const RULES: Rule[] = [
       /["']?allowedTools["']?\s*:\s*\[\s*['"]\*["']?/gi,
       /"(alwaysAllow|autoApprove|dangerouslySkipPermissions)"\s*:\s*true/gi,
       /--allow-all|--yolo|--dangerously/gi,
-      /npx\b[^;&]*\b(sh|bash|curl|node\s+-e)\b/gi,
+      // command fragments must stay on ONE line — without the newline
+      // exclusion this matches "npx foo" in one paragraph and "Bash" in
+      // another (seen in real skill docs), a false positive.
+      /npx\b[^;&\r\n]*\b(sh|bash|curl|node\s+-e)\b/gi,
     ],
   },
   {

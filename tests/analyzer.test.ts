@@ -85,6 +85,15 @@ describe("rule categories", () => {
     expect(result.riskLevel).toBe("high");
   });
 
+  test("TOOL_HIJACK: npx pattern does not span lines (multiline FP guard)", () => {
+    // Real-world case: "npx skills" in one paragraph and "Bash" in another
+    // must not concatenate into a phantom "npx ... Bash" command.
+    const result = scan(
+      "Install with `npx skills add`.\n\nallowed-tools: \"Read, Write, Edit, Bash\"\n",
+    );
+    expect(ruleIds(result)).not.toContain("TOOL_HIJACK");
+  });
+
   test("TOOL_HIJACK: autoApprove flag", () => {
     const result = scan(JSON.stringify({ autoApprove: true }));
     expect(ruleIds(result)).toContain("TOOL_HIJACK");
