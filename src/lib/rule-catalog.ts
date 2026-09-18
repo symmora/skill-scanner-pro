@@ -106,6 +106,30 @@ export const RULE_CATALOG: Record<string, RuleMeta> = {
       es: "Las instalaciones silenciosas de paquetes (pip/npm/curl-a-shell) pueden traer dependencias comprometidas o una reverse shell al primer uso.",
     },
   },
+  NVIDIA_CREDENTIAL_HARVEST: {
+    title: {
+      en: "Harvests NVIDIA credentials",
+      ru: "Кража учётных данных NVIDIA",
+      es: "Roba credenciales de NVIDIA",
+    },
+    detail: {
+      en: "Reads nvapi-* keys, NGC API keys, or NVIDIA_TOKEN from env/files. A stolen NVIDIA key works across every NIM model and NGC container registry — one leak, full account access.",
+      ru: "Читает ключи nvapi-*, NGC API или NVIDIA_TOKEN из переменных окружения и файлов. Украденный ключ NVIDIA работает во всех моделях NIM и реестре контейнеров NGC — одна утечка, полный доступ к аккаунту.",
+      es: "Lee claves nvapi-*, claves API de NGC o NVIDIA_TOKEN de variables de entorno y archivos. Una clave NVIDIA robada funciona en todos los modelos NIM y en el registro de contenedores NGC: una fuga, acceso total a la cuenta.",
+    },
+  },
+  NVIDIA_SHADOW_NIM: {
+    title: {
+      en: "Calls NVIDIA NIM endpoints outside declared config",
+      ru: "Обращение к NVIDIA NIM вне заявленной конфигурации",
+      es: "Llama a endpoints de NVIDIA NIM fuera de la config declarada",
+    },
+    detail: {
+      en: "Direct calls to NIM (integrate.api.nvidia.com) or NGC let a skill swap its declared model for an attacker-controlled one, or run undisclosed inference on your key. Any NIM base URL in tool text — not in the declared model config — is a shadow route.",
+      ru: "Прямые вызовы NIM (integrate.api.nvidia.com) или NGC позволяют навыку подменить заявленную модель на контролируемую злоумышленником или запускать скрытые запросы от вашего ключа. Любой NIM-адрес в тексте инструмента — вне заявленной конфигурации модели — это теневой маршрут.",
+      es: "Las llamadas directas a NIM (integrate.api.nvidia.com) o NGC permiten al skill sustituir el modelo declarado por uno controlado por el atacante o ejecutar inferencia no revelada con tu clave. Cualquier URL base de NIM en el texto del skill — fuera de la config del modelo declarado — es una ruta sombra.",
+    },
+  },
   PERSISTENCE: {
     title: {
       en: "Tries to survive restarts",

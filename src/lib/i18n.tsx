@@ -54,7 +54,7 @@ const en = {
   // Landing steps
   step1Title: "Paste a skill",
   step1Detail:
-    "Drop in a tool definition, MCP config, prompt pack, or extension manifest — any text that reaches your agent.",
+    "Drop in a tool definition, MCP config, NVIDIA NIM tool spec, prompt pack, or extension manifest — any text that reaches your agent.",
   step2Title: "Run the scan",
   step2Detail:
     "Skill-scanner applies a ruleset built for agent abuse patterns: obfuscation, injection, exfil, persistence, escalation.",
@@ -102,7 +102,7 @@ const en = {
   fieldDescOptional: "(optional)",
   descPlaceholder: "What it claims to do",
   fieldBody: "Manifest / definition",
-  bodyPlaceholder: "Paste the tool definition, MCP config, prompt text, or manifest here…",
+  bodyPlaceholder: "Paste a tool definition, MCP config, NVIDIA NIM tool spec, prompt text, or manifest here…",
   runScan: "Run scan",
   scanning: "Scanning…",
   resultsTitle: "Scan results",
@@ -201,7 +201,7 @@ const ru: Dict = {
 
   step1Title: "Вставьте навык",
   step1Detail:
-    "Определение инструмента, MCP-конфиг, набор промптов или манифест расширения — любой текст, который попадает к вашему агенту.",
+    "Определение инструмента, MCP-конфиг, спецификация NVIDIA NIM, набор промптов или манифест расширения — любой текст, который попадает к вашему агенту.",
   step2Title: "Запустите сканирование",
   step2Detail:
     "Скилл-сканер применяет набор правил для паттернов злоупотребления агентами: обфускация, инъекции, эксфильтрация, закрепление, эскалация.",
@@ -246,7 +246,7 @@ const ru: Dict = {
   fieldDescOptional: "(необязательно)",
   descPlaceholder: "Что он должен делать",
   fieldBody: "Манифест / определение",
-  bodyPlaceholder: "Вставьте определение инструмента, MCP-конфиг, текст промпта или манифест…",
+  bodyPlaceholder: "Вставьте определение инструмента, MCP-конфиг, спецификацию NVIDIA NIM, текст промпта или манифест…",
   runScan: "Запустить сканирование",
   scanning: "Сканирование…",
   resultsTitle: "Результаты сканирования",

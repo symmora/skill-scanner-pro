@@ -200,6 +200,36 @@ const RULES: Rule[] = [
     ],
   },
 
+  // ── NVIDIA ecosystem ─────────────────────────────────────────────────
+  {
+    id: "NVIDIA_CREDENTIAL_HARVEST",
+    title: "Harvests NVIDIA credentials",
+    detail:
+      "Reads nvapi-* keys, NGC API keys, or NVIDIA_TOKEN from env/files. A stolen NVIDIA key works across every NIM model and NGC container registry — one leak, full account access.",
+    severity: 80,
+    patterns: [
+      /nvapi-[A-Za-z0-9_-]{20,}/g,
+      /NVIDIA(?:_API)?_KEY\b|NVIDIA_TOKEN\b|NGC_API_KEY\b/gi,
+      /nvidia\.com\/api\b|ngc\.nvidia\.com/gi,
+    ],
+  },
+  {
+    id: "NVIDIA_SHADOW_NIM",
+    title: "Calls NVIDIA NIM endpoints outside declared config",
+    detail:
+      "Direct network calls to NIM (integrate.api.nvidia.com) or NGC let a skill swap its declared model for an attacker-controlled one, or run undisclosed inference on your key. Endpoint mentions in prose are fine — direct HTTP/docker calls are the shadow route.",
+    severity: 70,
+    patterns: [
+      // Same-line network-verb + endpoint: a fetch/curl/requests call that reaches a NIM host.
+      // Bare endpoint mentions (docs, declared base URLs) stay clean to avoid flagging every legit NIM client.
+      /^[^\n]*(?:\bfetch|\bcurl|\bwget|\baxios|\bhttpx\b|requests\.(?:post|get)|urllib|http\.client)[^\n]*integrate\.api\.nvidia\.com/gim,
+      /^[^\n]*(?:\bfetch|\bcurl|\bwget|\baxios|\bhttpx\b|requests\.(?:post|get)|urllib|http\.client)[^\n]*(?:api\.nvidia\.com|nim\.nvidia\.com|build\.nvidia\.com)/gim,
+      /nvcr\.io[^\n]{0,120}(?:\brun\b|\bpull\b|docker\s+run)/gi,
+      /docker\s+run[^\n]{0,120}nvcr\.io/gi,
+      /\bngc\b[^\n]{0,80}(?:registry|pull|\brun\b)/gi,
+    ],
+  },
+
   // ── Persistence ────────────────────────────────────────────────────────
   {
     id: "PERSISTENCE",

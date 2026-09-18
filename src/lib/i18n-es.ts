@@ -44,7 +44,7 @@ const es = {
   // Landing steps
   step1Title: "Pega un skill",
   step1Detail:
-    "Suelta una definición de herramienta, un config de MCP, un pack de prompts o un manifiesto de extensión: cualquier texto que llegue a tu agente.",
+    "Suelta una definición de herramienta, un config de MCP, una especificación NVIDIA NIM, un pack de prompts o un manifiesto de extensión: cualquier texto que llegue a tu agente.",
   step2Title: "Ejecuta el escaneo",
   step2Detail:
     "Skill-scanner aplica un conjunto de reglas para patrones de abuso de agentes: ofuscación, inyección, exfiltración, persistencia, escalada.",
@@ -88,7 +88,7 @@ const es = {
   descPlaceholder: "Qué dice hacer",
   fieldBody: "Manifiesto / definición",
   bodyPlaceholder:
-    "Pega aquí la definición de la herramienta, el config de MCP, el texto del prompt o el manifiesto…",
+    "Pega aquí la definición de la herramienta, el config de MCP, la especificación NVIDIA NIM, el texto del prompt o el manifiesto…",
   runScan: "Ejecutar escaneo",
   scanning: "Escaneando…",
   resultsTitle: "Resultados del escaneo",
