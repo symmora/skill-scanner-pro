@@ -17,6 +17,7 @@ export const LANGUAGES: { id: Language; label: string; short: string }[] = [
 ];
 
 const en = {
+  appName: "DIT-scanner",
   // Nav / header
   signIn: "Sign in",
   startScanning: "Start scanning",
@@ -29,7 +30,7 @@ const en = {
   heroTitle1: "Every skill your agent runs",
   heroTitle2: "should earn your trust first.",
   heroSubtitle:
-    "Skills and MCP tools can hide malicious movements — obfuscated commands, instruction hijacks, quiet exfiltration. Aegis Scanner reads the definition before your agent ever does, and scores it 0–100.",
+    "Skills and MCP tools can hide malicious movements — obfuscated commands, instruction hijacks, quiet exfiltration. DIT-scanner reads the definition before your agent ever does, and scores it 0–100.",
   ctaFirst: "Scan your first skill",
   ctaHow: "See how it works",
   heroNote: "Free · runs locally on Convex · no skill ever leaves your workspace",
@@ -54,7 +55,7 @@ const en = {
     "Drop in a tool definition, MCP config, prompt pack, or extension manifest — any text that reaches your agent.",
   step2Title: "Run the scan",
   step2Detail:
-    "Aegis applies a ruleset built for agent abuse patterns: obfuscation, injection, exfil, persistence, escalation.",
+    "DIT-scanner applies a ruleset built for agent abuse patterns: obfuscation, injection, exfil, persistence, escalation.",
   step3Title: "Read the verdict",
   step3Detail:
     "A 0–100 risk score with cited evidence — every finding quotes the exact line that triggered it.",
@@ -163,6 +164,7 @@ const en = {
 type Dict = typeof en;
 
 const ru: Dict = {
+  appName: "ДИТ-сканер",
   signIn: "Войти",
   startScanning: "Начать сканирование",
   scannedFlagged: (skills: number, flagged: number) =>
@@ -173,7 +175,7 @@ const ru: Dict = {
   heroTitle1: "Каждый навык, который запускает ваш агент,",
   heroTitle2: "сначала должен заслужить доверие.",
   heroSubtitle:
-    "Навыки и MCP-инструменты могут скрывать вредоносные действия — обфусцированные команды, перехват инструкций, тихую эксфильтрацию. Aegis Scanner читает определение раньше вашего агента и выставляет оценку 0–100.",
+    "Навыки и MCP-инструменты могут скрывать вредоносные действия — обфусцированные команды, перехват инструкций, тихую эксфильтрацию. ДИТ-сканер читает определение раньше вашего агента и выставляет оценку 0–100.",
   ctaFirst: "Просканировать первый навык",
   ctaHow: "Как это работает",
   heroNote: "Бесплатно · работает локально на Convex · навык не покидает ваш воркспейс",
@@ -197,7 +199,7 @@ const ru: Dict = {
     "Определение инструмента, MCP-конфиг, набор промптов или манифест расширения — любой текст, который попадает к вашему агенту.",
   step2Title: "Запустите сканирование",
   step2Detail:
-    "Aegis применяет набор правил для паттернов злоупотребления агентами: обфускация, инъекции, эксфильтрация, закрепление, эскалация.",
+    "ДИТ-сканер применяет набор правил для паттернов злоупотребления агентами: обфускация, инъекции, эксфильтрация, закрепление, эскалация.",
   step3Title: "Прочитайте вердикт",
   step3Detail:
     "Оценка риска 0–100 с доказательствами — каждая находка цитирует конкретную строку, которая её вызвала.",
