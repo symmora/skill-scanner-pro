@@ -26,10 +26,10 @@
 | # | Правило | ID | Вес | Цитаты |
 |---|---|---|---|---|
 | 1 | Перехват инструкций в тексте навыка | `PROMPT_INJECTION` | 90 | `ignore previous instructions` |
-| 2 | Запрос повышенных привилегий | `PRIVILEGE_ESCALATION` | 85 | `sudo`<br>`setuid`<br>`setgid` |
-| 3 | Скрытый вызов инструментов или теневой конфиг | `TOOL_HIJACK` | 80 | `--allow-all`<br>`--yolo`<br>`--dangerously` |
-| 4 | Попытка пережить перезапуск | `PERSISTENCE` | 80 | `crontab`<br>`autostart`<br>`LaunchAgents`<br>`RunOnce` |
-| 5 | Чтение переменных окружения и секретов | `EXFIL_ENV` | 70 | `printenv`<br>`.env`<br>`credentials`<br>`id_rsa` |
+| 2 | Запрос повышенных привилегий | `PRIVILEGE_ESCALATION` | 85 | `sudo` · `setuid` · `setgid` |
+| 3 | Скрытый вызов инструментов или теневой конфиг | `TOOL_HIJACK` | 80 | `--allow-all` · `--yolo` · `--dangerously` |
+| 4 | Попытка пережить перезапуск | `PERSISTENCE` | 80 | `crontab` · `autostart` · `LaunchAgents` · `RunOnce` |
+| 5 | Чтение переменных окружения и секретов | `EXFIL_ENV` | 70 | `printenv` · `.env` · `credentials` · `id_rsa` |
 | 6 | Закодированный блок, похожий на секрет | `ENCODED_SECRETS` | 55 | `eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFuYWx5emVyLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxyXG4gKiBIZXVyaXN0aWMgYW5hbHl6ZXIgdGhhdCBzY29yZXMgYWdlbnQgc2tpbGxzIC8gdG9vbHMg` |
 
 ## Разбор находок (ручная верификация)

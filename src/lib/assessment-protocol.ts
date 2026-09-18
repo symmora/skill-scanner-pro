@@ -236,7 +236,8 @@ export function buildAssessmentProtocol(skill: Skill, language: Language): strin
   skill.findings.forEach((f, i) => {
     const meta = getRuleMeta(f.ruleId);
     const title = meta ? meta.title[language] : f.ruleId;
-    const evidence = f.evidence.length > 0 ? f.evidence.map((e) => `\`${e.replace(/`/g, "'")}\``).join("<br>") : "—";
+    // Plain-Markdown separator — no HTML tags inside table cells.
+    const evidence = f.evidence.length > 0 ? f.evidence.map((e) => `\`${e.replace(/`/g, "'")}\``).join(" · ") : "—";
     lines.push(`| ${i + 1} | ${title} | \`${f.ruleId}\` | ${f.severity} | ${evidence} |`);
   });
   lines.push("");
