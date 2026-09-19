@@ -102,6 +102,20 @@ bun run dev             # dev-сервер Vite
 
 Каждый протокол содержит: разбивку скора (база + стекинг), таблицу правил с дословными цитатами и точными местами, ручной разбор каждой находки и вердикт. Копии лежат в `assets/`.
 
+### Пачка из dii-skills (полигон 87 юнитов)
+
+Пять скиллов из [symmora/dii-skills](https://github.com/symmora/dii-skills) — собственная коллекция автора (45 скиллов + 28 паттернов + 10 субагентов, прогнаны целиком):
+
+| Скилл | Скор | Класс | Вердикт после триажа | FP-архетип |
+|---|---|---|---|---|
+| [find-skill](scores/SCANNER-SCORE-dii-find-skill.md) | 0/100 | Чисто | Принят | — |
+| [refactoring-adviser](scores/SCANNER-SCORE-dii-refactoring-adviser.md) | 0/100 | Чисто | Принят | — |
+| [create-skill](scores/SCANNER-SCORE-dii-create-skill.md) | 60/100 | Средний | Принят | самоочистка `/tmp` в тест-скрипте |
+| [code-review-helper](scores/SCANNER-SCORE-dii-code-review-helper.md) | 70/100 | Повышенный | Принят | учебный пример утечки в схеме отчёта |
+| [commit-message-generator](scores/SCANNER-SCORE-dii-commit-message-generator.md) | 70/100 | Повышенный | Принят | пример commit-сообщения про gitignore |
+
+Пачка дала три архетипа ложных срабатываний на безвредном коде — готовая аргументация для контекстного режима движка.
+
 ## Конфигурация: env рядом с проектом
 
 Принцип проекта: **вся конфигурация живёт в env-файлах рядом с кодом**, ничего не хардкодится:
