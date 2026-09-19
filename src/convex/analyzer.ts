@@ -85,6 +85,12 @@ const RULES: Rule[] = [
       /printf\s+['"][0-9a-fA-F\\x]{40,}['"].*\|\s*(ba)?sh\b/gi,
       /\b(bash|sh|python3?|node)\s+-c\s+['"][^'"]*(\\x[0-9a-fA-F]{2}){8,}/gi,
       /eval\s*\(\s*atob\s*\(/gi,
+      // PowerShell: -enc/-EncodedCommand, or download-cradles (IEX + WebClient/Invoke-Expression)
+      /-enc(odedcommand)?\s+['"][A-Za-z0-9+/=]{24,}['"]/gi,
+      /iex\s*\(\s*(new-object\s+net\.webclient\)\.|invoke-webrequest|invoke-restmethod|\(irm\s)/gi,
+      /invoke-expression\s*\(\s*(new-object\s+net\.webclient\)\.|invoke-webrequest|invoke-restmethod|\(irm\s)/gi,
+      // Node.js: eval of a decoded buffer, e.g. eval(Buffer.from("...", "base64").toString())
+      /eval\s*\(\s*Buffer\.from\s*\(/gi,
     ],
   },
   {
@@ -112,6 +118,13 @@ const RULES: Rule[] = [
       /\b(fetch|axios)\s*\(\s*['"]https?:\/\//gi,
       /requests\.post\s*\(/gi,
       /\bnc\s+(-\w+\s+)*\d+\.\d+\.\d+\.\d+/gi,
+      // Python: urlopen / urllib.request to a remote URL
+      /\burllib\.request\.urlopen\s*\(|\burlopen\s*\(\s*['"]https?:\/\//gi,
+      // .NET / PowerShell POST: Invoke-RestMethod -Method Post, HttpClient.PostAsync
+      /invoke-restmethod\s[^\n]{0,80}-method\s+(post|put)/gi,
+      /HttpClient\s*\(\s*\)\.PostAsync\s*\(/g,
+      // Java/Scala: new URL(...).openStream()
+      /new\s+URL\s*\([^)]{0,200}\)\.openStream\s*\(/g,
     ],
   },
   {
@@ -128,6 +141,8 @@ const RULES: Rule[] = [
       /~\/\.?(ssh|aws|netrc|npmrc|gnupg)/gi,
       /\.env\b/gi,
       /id_rsa|credentials\b|secret[_-]?key\b/gi,
+      // Java/Scala: System.getenv("...") / System.getenv()
+      /System\.getenv\s*\(/g,
     ],
   },
   {
@@ -202,6 +217,13 @@ const RULES: Rule[] = [
       /curl[^|;&]*\|\s*(ba)?sh\b/gi,
       /wget[^|;&]*\|\s*(ba)?sh\b/gi,
       /apt(-get)?\s+install\s+(-y\s+)/gi,
+      // Windows: bitsadmin transfer / certutil decode-and-execute
+      /bitsadmin\s+\/transfer\s/gi,
+      /certutil\s+-urlcache\s+-f\s/gi,
+      /certutil\s+-decode\s+\S+\s+\S*\.exe/gi,
+      // Piping a download straight into python
+      /curl[^|;&]*\|\s*python3?\b/gi,
+      /wget[^|;&]*\|\s*python3?\b/gi,
     ],
   },
 
@@ -266,6 +288,40 @@ const RULES: Rule[] = [
       /\bnsenter\b|\bunshare\b|\bcapsh\b/gi,
       /\/etc\/(passwd|shadow)\b/gi,
       /setuid|setgid\b/gi,
+    ],
+  },
+
+  // ── Cross-language process spawning ─────────────────────────────────
+  {
+    id: "SUBPROCESS_SPAWN",
+    title: "Spawns shell processes from code",
+    detail:
+      "Programmatic shell execution (Python subprocess/os.system, Node child_process, Scala sys.process, .NET Process.Start, Java exec) runs arbitrary commands with the skill's privileges — the usual vehicle for actions the manifest never declares.",
+    severity: 70,
+    patterns: [
+      /\bsubprocess\.(?:run|call|check_call|check_output|Popen)\s*\(/g,
+      /\bos\.(?:system|popen|exec[lv])\s*\(/g,
+      /\bchild_process["']?\s*\.\s*(?:exec|execSync|spawn|spawnSync|fork)\s*\(/g,
+      /\b(?:exec|execSync)\s*\(\s*[`'"][^`'"]{0,200}(?:\brm\b|\bcurl\b|\bwget\b|sudo\b|\bchmod\b|\bmv\b|\bcat\b)/g,
+      /\bsys\.process\b\.?(?:string|ProcessImpl)?/g,
+      /\bProcessImpl\s*\(/g,
+      /ProcessBuilder\s*\(/g,
+      /Runtime\.getRuntime\(\)\.exec\s*\(/g,
+      /Process\.Start\s*\(/g,
+    ],
+  },
+
+  // ── Package-manager lifecycle hooks ─────────────────────────────────
+  {
+    id: "PKG_HOOK",
+    title: "Lifecycle hook in package manifests",
+    detail:
+      "postinstall / prepare / preinstall hooks run arbitrary commands during package installation — npm packages and local installs inherit these without any extra consent step.",
+    severity: 80,
+    patterns: [
+      /['"](?:postinstall|preinstall|prepare|postpack|prepack)['"]\s*:/gi,
+      /(?:post|pre)install\.cmd|install\.bat/gi,
+      /\[options\.install_hook\]/gi,
     ],
   },
 ];

@@ -154,6 +154,30 @@ export const RULE_CATALOG: Record<string, RuleMeta> = {
       es: "sudo, suplantación de uid o escapes de contenedor dan al skill un poder muy superior al que necesita un asistente.",
     },
   },
+  SUBPROCESS_SPAWN: {
+    title: {
+      en: "Spawns shell processes from code",
+      ru: "Запуск shell-процессов из кода",
+      es: "Lanza procesos de shell desde el código",
+    },
+    detail: {
+      en: "Programmatic shell execution (Python subprocess/os.system, Node child_process, Scala sys.process, .NET Process.Start, Java exec) runs arbitrary commands with the skill's privileges — the usual vehicle for actions the manifest never declares.",
+      ru: "Программный запуск команд (Python subprocess/os.system, Node child_process, Scala sys.process, .NET Process.Start, Java exec) исполняет произвольные команды с привилегиями навыка — обычный транспорт для действий, которых нет в манифесте.",
+      es: "La ejecución programática de comandos (Python subprocess/os.system, Node child_process, Scala sys.process, .NET Process.Start, Java exec) corre comandos arbitrarios con los privilegios del skill: el vehículo habitual de acciones que el manifiesto nunca declara.",
+    },
+  },
+  PKG_HOOK: {
+    title: {
+      en: "Lifecycle hook in package manifests",
+      ru: "Lifecycle-хук в манифесте пакета",
+      es: "Hook de ciclo de vida en manifiestos de paquetes",
+    },
+    detail: {
+      en: "postinstall / prepare / preinstall hooks run arbitrary commands during package installation — npm packages and local installs inherit these without any extra consent step.",
+      ru: "Хуки postinstall / prepare / preinstall исполняют произвольные команды при установке пакета — npm-пакеты и локальные установки наследуют их без отдельного согласия.",
+      es: "Los hooks postinstall / prepare / preinstall ejecutan comandos arbitrarios durante la instalación: los paquetes npm y las instalaciones locales los heredan sin consentimiento adicional.",
+    },
+  },
 };
 
 export function getRuleMeta(ruleId: string): RuleMeta {

