@@ -9,7 +9,7 @@
 ## Паспорт
 
 - Название: refactoring-adviser
-- Тип: skill
+- Тип: скилл
 - Автор: **symmora** (самооценка автора)
 - Источник: https://github.com/symmora/dii-skills (`skills/refactoring-adviser`)
 - Дата оценки: 2026-09-19 (движок v2 — с мультиязычными правилами SUBPROCESS_SPAWN и PKG_HOOK; скан папки целиком)

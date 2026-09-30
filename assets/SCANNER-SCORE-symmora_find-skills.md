@@ -9,7 +9,7 @@
 ## Паспорт
 
 - Название: symmora_find-skills (навык `find-skills`)
-- Тип: skill
+- Тип: скилл
 - Автор: **symmora** (самооценка автора)
 - Состав: `SKILL.md`
 - Дата оценки: 2026-09-19 11:54 UTC (перепрогон на движке v2 — с правилами SUBPROCESS_SPAWN и PKG_HOOK)
